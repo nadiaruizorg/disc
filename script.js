@@ -1801,7 +1801,7 @@ function displayResults() {
     try {
         // Ocultar sección de cuestionario y mostrar resultados
         discSection.classList.add('hidden');
-    resultsSection.classList.remove('hidden');
+        resultsSection.classList.remove('hidden');
         console.log('Secciones visibilidad cambiada - quiz hidden, results visible');
         
         // Ver resultados calculados
@@ -1875,52 +1875,76 @@ function createChart(canvasId, data, title) {
         return;
     }
     
+    // Asegurar que los valores son numéricos
+    const valores = {
+        D: parseInt(data.D) || 0,
+        I: parseInt(data.I) || 0,
+        S: parseInt(data.S) || 0,
+        C: parseInt(data.C) || 0
+    };
+    
+    console.log(`Valores procesados para ${canvasId}:`, valores);
+    
     // Crear nuevo gráfico
     try {
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['D (Dominancia)', 'I (Influencia)', 'S (Estabilidad)', 'C (Cumplimiento)'],
-            datasets: [{
-                    label: title,
-                    data: [data.D, data.I, data.S, data.C],
-                backgroundColor: [
-                    'rgba(231, 76, 60, 0.7)',    // D - rojo
-                    'rgba(241, 196, 15, 0.7)',   // I - amarillo (cambiado)
-                    'rgba(46, 204, 113, 0.7)',   // S - verde
-                    'rgba(52, 152, 219, 0.7)'    // C - azul (cambiado)
-                ],
-                borderColor: [
-                    'rgba(231, 76, 60, 1)',      // D - rojo
-                    'rgba(241, 196, 15, 1)',     // I - amarillo (cambiado)
-                    'rgba(46, 204, 113, 1)',     // S - verde
-                    'rgba(52, 152, 219, 1)'      // C - azul (cambiado)
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                        max: 56, // Máximo teórico (14 grupos x 4 puntos máximo)
-                        title: {
-                            display: true,
-                            text: 'Puntuación'
-                        }
-                }
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['D', 'I', 'S', 'C'],
+                datasets: [{
+                    data: [valores.D, valores.I, valores.S, valores.C],
+                    backgroundColor: [
+                        'rgba(231, 76, 60, 0.7)',    // D - rojo
+                        'rgba(241, 196, 15, 0.7)',   // I - amarillo 
+                        'rgba(46, 204, 113, 0.7)',   // S - verde
+                        'rgba(52, 152, 219, 0.7)'    // C - azul
+                    ],
+                    borderColor: [
+                        'rgba(231, 76, 60, 1)',      // D - rojo
+                        'rgba(241, 196, 15, 1)',     // I - amarillo
+                        'rgba(46, 204, 113, 1)',     // S - verde
+                        'rgba(52, 152, 219, 1)'      // C - azul
+                    ],
+                    borderWidth: 1
+                }]
             },
-            plugins: {
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
                     title: {
-                        display: false,
-                        text: title,
-                        font: {
-                            size: 18
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const labels = ['Dominancia', 'Influencia', 'Estabilidad', 'Cumplimiento'];
+                                return labels[context.dataIndex] + ': ' + context.raw;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 56,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#a0a0b0'
                         }
                     },
-                legend: {
-                    display: false
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#a0a0b0'
+                        }
                     }
                 }
             }
