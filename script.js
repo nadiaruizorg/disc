@@ -284,16 +284,16 @@ function showResults() {
                 label: 'Porcentaje',
                 data: [answers.D, answers.I, answers.S, answers.C],
                 backgroundColor: [
-                    'rgba(255, 99, 132, 0.8)',
-                    'rgba(80, 162, 235, 0.8)',
-                    'rgba(255, 206, 86, 0.8)',
-                    'rgba(75, 192, 192, 0.8)'
+                    'rgba(255, 117, 142, 0.7)',
+                    'rgba(100, 182, 255, 0.7)',
+                    'rgba(255, 206, 86, 0.7)',
+                    'rgba(105, 212, 212, 0.7)'
                 ],
                 borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(80, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)'
+                    'rgba(255, 117, 142, 0.9)',
+                    'rgba(100, 182, 255, 0.9)',
+                    'rgba(255, 206, 86, 0.9)',
+                    'rgba(105, 212, 212, 0.9)'
                 ],
                 borderWidth: 1
             }]
@@ -305,18 +305,18 @@ function showResults() {
                     beginAtZero: true,
                     max: 100,
                     grid: {
-                        color: 'rgba(255, 255, 255, 0.1)'
+                        color: 'rgba(255, 255, 255, 0.08)'
                     },
                     ticks: {
-                        color: '#e1e1e6'
+                        color: '#c0c0d0'
                     }
                 },
                 x: {
                     grid: {
-                        color: 'rgba(255, 255, 255, 0.1)'
+                        color: 'rgba(255, 255, 255, 0.08)'
                     },
                     ticks: {
-                        color: '#e1e1e6'
+                        color: '#c0c0d0'
                     }
                 }
             },
@@ -330,10 +330,10 @@ function showResults() {
                             return `${context.parsed.y}%`;
                         }
                     },
-                    backgroundColor: 'rgba(28, 28, 37, 0.9)',
-                    titleColor: '#ffffff',
-                    bodyColor: '#e1e1e6',
-                    borderColor: 'rgba(45, 45, 58, 1)',
+                    backgroundColor: 'rgba(39, 39, 58, 0.9)',
+                    titleColor: '#f0f0f5',
+                    bodyColor: '#d1d1d8',
+                    borderColor: 'rgba(60, 60, 80, 1)',
                     borderWidth: 1
                 }
             }

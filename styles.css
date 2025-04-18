@@ -5,15 +5,15 @@
 }
 
 :root {
-    --primary-color: #7371fc;
-    --primary-hover: #5855f7;
-    --text-color: #e1e1e6;
-    --background-dark: #13131a;
-    --card-background: #1c1c25;
-    --card-border: #2d2d3a;
-    --option-background: #252532;
-    --option-hover: #2a2a35;
-    --option-selected: #2d2d4a;
+    --primary-color: #8887fc;
+    --primary-hover: #7976ff;
+    --text-color: #d1d1d8;
+    --background-dark: #1e1e29;
+    --card-background: #27273a;
+    --card-border: #3c3c50;
+    --option-background: #33334a;
+    --option-hover: #3a3a53;
+    --option-selected: #464670;
 }
 
 body {
@@ -34,7 +34,7 @@ body {
 .section {
     background-color: var(--card-background);
     border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     padding: 24px;
     margin-top: 20px;
     border: 1px solid var(--card-border);
@@ -45,7 +45,7 @@ body {
 }
 
 h1, h2 {
-    color: white;
+    color: #f0f0f5;
     margin-bottom: 20px;
     text-align: center;
 }
@@ -145,7 +145,7 @@ input:focus {
     margin-bottom: 20px;
     line-height: 1.5;
     font-weight: 500;
-    color: white;
+    color: #f0f0f5;
 }
 
 .options {
@@ -173,6 +173,7 @@ input:focus {
     transition: background-color 0.2s, transform 0.1s;
     font-size: 16px;
     font-weight: 500;
+    color: #c0c0d0;
 }
 
 .option-group:hover .option-label {
@@ -194,7 +195,7 @@ input:focus {
 .option-group input[type="radio"]:checked + .option-label {
     background-color: var(--option-selected);
     border-left: 4px solid var(--primary-color);
-    color: white;
+    color: #f0f0f5;
     font-weight: 600;
 }
 
