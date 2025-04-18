@@ -1026,8 +1026,25 @@ function mostrarResultadosUsuario(usuario) {
                 const resultadosUsuario = datosUsuario.resultados;
                 
                 // Mostrar detalles
-                const fechaTest = new Date(datosUsuario.fecha || new Date());
-                const fechaFormateada = fechaTest.toLocaleDateString() + ' ' + fechaTest.toLocaleTimeString();
+                const fechaTest = datosUsuario.fecha ? new Date(datosUsuario.fecha) : new Date();
+                let fechaFormateada = "";
+
+                try {
+                    // Verificar que la fecha sea válida
+                    if (isNaN(fechaTest.getTime())) {
+                        // Si la fecha es inválida, mostrar fecha actual
+                        fechaFormateada = new Date().toLocaleDateString();
+                        console.warn("Fecha inválida detectada, usando fecha actual:", fechaFormateada);
+                    } else {
+                        // Si la fecha es válida, mostrar fecha normal
+                        fechaFormateada = fechaTest.toLocaleDateString();
+                    }
+                } catch (e) {
+                    // En caso de error, mostrar fecha actual
+                    fechaFormateada = new Date().toLocaleDateString();
+                    console.error("Error al formatear fecha:", e);
+                }
+
                 document.getElementById('admin-test-date').textContent = `Fecha: ${fechaFormateada}`;
 
                 // Actualizar puntuaciones en la tabla
@@ -1079,8 +1096,25 @@ function mostrarResultadosUsuario(usuario) {
                 const resultadosUsuario = datosUsuario.resultados;
                 
                 // Mostrar detalles
-                const fechaTest = new Date(datosUsuario.fecha || new Date());
-                const fechaFormateada = fechaTest.toLocaleDateString() + ' ' + fechaTest.toLocaleTimeString();
+                const fechaTest = datosUsuario.fecha ? new Date(datosUsuario.fecha) : new Date();
+                let fechaFormateada = "";
+
+                try {
+                    // Verificar que la fecha sea válida
+                    if (isNaN(fechaTest.getTime())) {
+                        // Si la fecha es inválida, mostrar fecha actual
+                        fechaFormateada = new Date().toLocaleDateString();
+                        console.warn("Fecha inválida detectada, usando fecha actual:", fechaFormateada);
+                    } else {
+                        // Si la fecha es válida, mostrar fecha normal
+                        fechaFormateada = fechaTest.toLocaleDateString();
+                    }
+                } catch (e) {
+                    // En caso de error, mostrar fecha actual
+                    fechaFormateada = new Date().toLocaleDateString();
+                    console.error("Error al formatear fecha:", e);
+                }
+
                 document.getElementById('admin-test-date').textContent = `Fecha: ${fechaFormateada}`;
 
                 // Actualizar puntuaciones en la tabla
@@ -1122,8 +1156,25 @@ function mostrarResultadosUsuario(usuario) {
                         const resultadosUsuario = datosUsuario.resultados;
                         
                         // Mostrar detalles
-                        const fechaTest = new Date(datosUsuario.fecha || new Date());
-                        const fechaFormateada = fechaTest.toLocaleDateString() + ' ' + fechaTest.toLocaleTimeString();
+                        const fechaTest = datosUsuario.fecha ? new Date(datosUsuario.fecha) : new Date();
+                        let fechaFormateada = "";
+
+                        try {
+                            // Verificar que la fecha sea válida
+                            if (isNaN(fechaTest.getTime())) {
+                                // Si la fecha es inválida, mostrar fecha actual
+                                fechaFormateada = new Date().toLocaleDateString();
+                                console.warn("Fecha inválida detectada, usando fecha actual:", fechaFormateada);
+                            } else {
+                                // Si la fecha es válida, mostrar fecha normal
+                                fechaFormateada = fechaTest.toLocaleDateString();
+                            }
+                        } catch (e) {
+                            // En caso de error, mostrar fecha actual
+                            fechaFormateada = new Date().toLocaleDateString();
+                            console.error("Error al formatear fecha:", e);
+                        }
+
                         document.getElementById('admin-test-date').textContent = `Fecha: ${fechaFormateada}`;
 
                         // Actualizar puntuaciones en la tabla
@@ -1176,8 +1227,25 @@ function mostrarResultadosUsuario(usuario) {
                     const resultadosUsuario = datosUsuario.resultados;
                     
                     // Mostrar detalles
-                    const fechaTest = new Date(datosUsuario.fecha || new Date());
-                    const fechaFormateada = fechaTest.toLocaleDateString() + ' ' + fechaTest.toLocaleTimeString();
+                    const fechaTest = datosUsuario.fecha ? new Date(datosUsuario.fecha) : new Date();
+                    let fechaFormateada = "";
+
+                    try {
+                        // Verificar que la fecha sea válida
+                        if (isNaN(fechaTest.getTime())) {
+                            // Si la fecha es inválida, mostrar fecha actual
+                            fechaFormateada = new Date().toLocaleDateString();
+                            console.warn("Fecha inválida detectada, usando fecha actual:", fechaFormateada);
+                        } else {
+                            // Si la fecha es válida, mostrar fecha normal
+                            fechaFormateada = fechaTest.toLocaleDateString();
+                        }
+                    } catch (e) {
+                        // En caso de error, mostrar fecha actual
+                        fechaFormateada = new Date().toLocaleDateString();
+                        console.error("Error al formatear fecha:", e);
+                    }
+
                     document.getElementById('admin-test-date').textContent = `Fecha: ${fechaFormateada}`;
 
                     // Actualizar puntuaciones en la tabla
