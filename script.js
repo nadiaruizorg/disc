@@ -1729,9 +1729,6 @@ function displayResults() {
                             <li><strong>S (Estabilidad):</strong> ${resultados.trabajo.S} en trabajo, ${resultados.privado.S} en privado</li>
                             <li><strong>C (Cumplimiento):</strong> ${resultados.trabajo.C} en trabajo, ${resultados.privado.C} en privado</li>
                         </ul>
-                        <p class="view-detailed-results">
-                            <a href="test_results.html?usuario=${encodeURIComponent(currentUser)}" class="view-detailed-link">Ver resultados detallados</a>
-                        </p>
                     `;
                 }
             } catch (error) {
