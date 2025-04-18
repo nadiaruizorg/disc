@@ -256,7 +256,7 @@ input:focus {
 .chart-section {
     background-color: var(--card-background);
     border-radius: 12px;
-    padding: 20px;
+    padding: 5px;
     margin-bottom: 15px;
     border: 1px solid var(--card-border);
 }
@@ -264,7 +264,8 @@ input:focus {
 .chart-section h2, .chart-section h3 {
     color: var(--primary-color);
     font-size: 1.3rem;
-    margin-bottom: 15px;
+    margin-top: 6px;
+    margin-bottom: 0px;
     text-align: center;
 }
 
@@ -337,7 +338,7 @@ input:focus {
 
 .scores-table th,
 .scores-table td {
-    padding: 10px;
+    padding: 3px;
     text-align: center;
     border: 1px solid var(--card-border);
 }
@@ -356,20 +357,20 @@ input:focus {
 .user-info {
     background-color: var(--card-background);
     border-radius: 12px;
-    padding: 15px;
+    padding: 10px;
     margin-bottom: 15px;
     border: 1px solid var(--card-border);
 }
 
 .user-name {
-    font-size: 1.2rem;
+    font-size: 1em;
     font-weight: 600;
     color: #f0f0f5;
     margin-bottom: 5px;
 }
 
 .test-date {
-    font-size: 0.9rem;
+    font-size: 0.7rem;
     color: #a0a0b0;
 }
 
@@ -627,13 +628,13 @@ input:focus {
 #admin-section {
     width: 100%;
     max-width: 900px;
-    margin: 0 auto;
-    padding: 20px;
+    margin: -20px auto;
+    padding: 10px;
     background-color: var(--card-background);
     border-radius: 16px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     text-align: center;
-    border: 1px solid var(--card-border);
+    border: 0px solid var(--card-border);
 }
 
 #admin-section h2 {
@@ -700,6 +701,7 @@ input:focus {
 
 .user-results h3, #selected-user-name {
     color: var(--primary-color);
+    margin-top: -10px;
     margin-bottom: 15px;
     border-bottom: 1px solid var(--card-border);
     padding-bottom: 10px;
@@ -845,7 +847,7 @@ input:focus {
     }
     
     .chart-section h2, .chart-section h3 {
-        font-size: 1.2rem;
+        font-size: 1rem;
     }
     
     .button {

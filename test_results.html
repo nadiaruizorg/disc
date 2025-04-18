@@ -281,6 +281,35 @@
         function createChart(canvasId, data, title) {
             const ctx = document.getElementById(canvasId).getContext('2d');
             
+            // Plugin personalizado para dibujar una línea horizontal en Y=35
+            const horizontalLinePlugin = {
+                id: 'horizontalLine',
+                beforeDatasetsDraw: function(chart) {
+                    if (chart.scales.y) {
+                        const yScale = chart.scales.y;
+                        const canvas = chart.canvas;
+                        const ctx = chart.ctx;
+                        const yValue = 35;
+                        
+                        const lineY = yScale.getPixelForValue(yValue);
+                        
+                        // Guardar el estado
+                        ctx.save();
+                        
+                        // Configurar el estilo de la línea
+                        ctx.beginPath();
+                        ctx.moveTo(chart.chartArea.left, lineY);
+                        ctx.lineTo(chart.chartArea.right, lineY);
+                        ctx.lineWidth = 1;
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+                        ctx.stroke();
+                        
+                        // Restaurar el estado
+                        ctx.restore();
+                    }
+                }
+            };
+            
             new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -341,7 +370,8 @@
                             }
                         }
                     }
-                }
+                },
+                plugins: [horizontalLinePlugin]
             });
         }
         

@@ -58,45 +58,37 @@ const discData = {
       "trabajo": [
         {
           "adjetivo": "Entusiasta",
-          "puntuacion": 1.0,
-          "tipo": "D"
-        },
-        {
-          "adjetivo": "Atrevido",
-          "puntuacion": 2.0,
           "tipo": "I"
         },
         {
+          "adjetivo": "Atrevido",
+          "tipo": "D"
+        },
+        {
           "adjetivo": "Concienzudo",
-          "puntuacion": 4.0,
-          "tipo": "S"
+          "tipo": "C"
         },
         {
           "adjetivo": "Amigable",
-          "puntuacion": 3.0,
-          "tipo": "C"
+          "tipo": "S"
         }
       ],
       "privado": [
         {
           "adjetivo": "Entusiasta",
-          "puntuacion": 1.0,
-          "tipo": "D"
-        },
-        {
-          "adjetivo": "Atrevido",
-          "puntuacion": 3.0,
           "tipo": "I"
         },
         {
+          "adjetivo": "Atrevido",
+          "tipo": "D"
+        },
+        {
           "adjetivo": "Concienzudo",
-          "puntuacion": 4.0,
-          "tipo": "S"
+          "tipo": "C"
         },
         {
           "adjetivo": "Amigable",
-          "puntuacion": 2.0,
-          "tipo": "C"
+          "tipo": "S"
         }
       ]
     },
@@ -105,45 +97,37 @@ const discData = {
       "trabajo": [
         {
           "adjetivo": "Lógico",
-          "puntuacion": 4.0,
-          "tipo": "S"
+          "tipo": "C"
         },
         {
           "adjetivo": "Atractivo",
-          "puntuacion": 1.0,
           "tipo": "I"
         },
         {
           "adjetivo": "Amable",
-          "puntuacion": 2.0,
-          "tipo": "D"
+          "tipo": "S"
         },
         {
           "adjetivo": "Franco",
-          "puntuacion": 3.0,
-          "tipo": "C"
+          "tipo": "D"
         }
       ],
       "privado": [
         {
           "adjetivo": "Lógico",
-          "puntuacion": 4.0,
-          "tipo": "S"
+          "tipo": "C"
         },
         {
           "adjetivo": "Atractivo",
-          "puntuacion": 3.0,
           "tipo": "I"
         },
         {
           "adjetivo": "Amable",
-          "puntuacion": 2.0,
-          "tipo": "D"
+          "tipo": "S"
         },
         {
           "adjetivo": "Franco",
-          "puntuacion": 1.0,
-          "tipo": "C"
+          "tipo": "D"
         }
       ]
     },
@@ -152,45 +136,37 @@ const discData = {
       "trabajo": [
         {
           "adjetivo": "Conciliador",
-          "puntuacion": 2.0,
-          "tipo": "D"
-        },
-        {
-          "adjetivo": "Extrovertido",
-          "puntuacion": 1.0,
-          "tipo": "C"
-        },
-        {
-          "adjetivo": "Osado",
-          "puntuacion": 3.0,
           "tipo": "S"
         },
         {
-          "adjetivo": "Cuidadoso",
-          "puntuacion": 4.0,
+          "adjetivo": "Extrovertido",
           "tipo": "I"
+        },
+        {
+          "adjetivo": "Osado",
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Cuidadoso",
+          "tipo": "C"
         }
       ],
       "privado": [
         {
           "adjetivo": "Conciliador",
-          "puntuacion": 1.0,
-          "tipo": "D"
-        },
-        {
-          "adjetivo": "Extrovertido",
-          "puntuacion": 2.0,
-          "tipo": "C"
-        },
-        {
-          "adjetivo": "Osado",
-          "puntuacion": 3.0,
           "tipo": "S"
         },
         {
-          "adjetivo": "Cuidadoso",
-          "puntuacion": 4.0,
+          "adjetivo": "Extrovertido",
           "tipo": "I"
+        },
+        {
+          "adjetivo": "Osado",
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Cuidadoso",
+          "tipo": "C"
         }
       ]
     },
@@ -199,45 +175,37 @@ const discData = {
       "trabajo": [
         {
           "adjetivo": "Persistente",
-          "puntuacion": 1.0,
-          "tipo": "C"
-        },
-        {
-          "adjetivo": "Discreto",
-          "puntuacion": 4.0,
           "tipo": "D"
         },
         {
+          "adjetivo": "Discreto",
+          "tipo": "C"
+        },
+        {
           "adjetivo": "Comprensivo",
-          "puntuacion": 3.0,
-          "tipo": "I"
+          "tipo": "S"
         },
         {
           "adjetivo": "Encantador",
-          "puntuacion": 2.0,
-          "tipo": "S"
+          "tipo": "I"
         }
       ],
       "privado": [
         {
           "adjetivo": "Persistente",
-          "puntuacion": 1.0,
-          "tipo": "C"
-        },
-        {
-          "adjetivo": "Discreto",
-          "puntuacion": 4.0,
           "tipo": "D"
         },
         {
+          "adjetivo": "Discreto",
+          "tipo": "C"
+        },
+        {
           "adjetivo": "Comprensivo",
-          "puntuacion": 2.0,
-          "tipo": "I"
+          "tipo": "S"
         },
         {
           "adjetivo": "Encantador",
-          "puntuacion": 3.0,
-          "tipo": "S"
+          "tipo": "I"
         }
       ]
     },
@@ -246,45 +214,37 @@ const discData = {
       "trabajo": [
         {
           "adjetivo": "Controlado",
-          "puntuacion": 4.0,
           "tipo": "S"
         },
         {
           "adjetivo": "Disciplinado",
-          "puntuacion": 2.0,
-          "tipo": "I"
+          "tipo": "C"
         },
         {
           "adjetivo": "Hablador",
-          "puntuacion": 3.0,
-          "tipo": "D"
+          "tipo": "I"
         },
         {
           "adjetivo": "Emprendedor",
-          "puntuacion": 1.0,
-          "tipo": "C"
+          "tipo": "D"
         }
       ],
       "privado": [
         {
           "adjetivo": "Controlado",
-          "puntuacion": 4.0,
           "tipo": "S"
         },
         {
           "adjetivo": "Disciplinado",
-          "puntuacion": 2.0,
-          "tipo": "I"
+          "tipo": "C"
         },
         {
           "adjetivo": "Hablador",
-          "puntuacion": 3.0,
-          "tipo": "D"
+          "tipo": "I"
         },
         {
           "adjetivo": "Emprendedor",
-          "puntuacion": 1.0,
-          "tipo": "C"
+          "tipo": "D"
         }
       ]
     },
@@ -293,44 +253,36 @@ const discData = {
       "trabajo": [
         {
           "adjetivo": "Me cuesta decir que \"NO\"",
-          "puntuacion": 4.0,
           "tipo": "S"
         },
         {
           "adjetivo": "Alma de la fiesta",
-          "puntuacion": 3.0,
-          "tipo": "D"
-        },
-        {
-          "adjetivo": "Seguro de sí mismo",
-          "puntuacion": 1.0,
           "tipo": "I"
         },
         {
+          "adjetivo": "Seguro de sí mismo",
+          "tipo": "D"
+        },
+        {
           "adjetivo": "Cumplidor",
-          "puntuacion": 2.0,
           "tipo": "C"
         }
       ],
       "privado": [
         {
           "adjetivo": "Me cuesta decir que \"NO\"",
-          "puntuacion": 4.0,
           "tipo": "S"
         },
         {
           "adjetivo": "Alma de la fiesta",
-          "puntuacion": 3.0,
-          "tipo": "D"
-        },
-        {
-          "adjetivo": "Seguro de sí mismo",
-          "puntuacion": 1.0,
           "tipo": "I"
         },
         {
+          "adjetivo": "Seguro de sí mismo",
+          "tipo": "D"
+        },
+        {
           "adjetivo": "Cumplidor",
-          "puntuacion": 2.0,
           "tipo": "C"
         }
       ]
@@ -340,44 +292,36 @@ const discData = {
       "trabajo": [
         {
           "adjetivo": "Respestuoso",
-          "puntuacion": 3.0,
-          "tipo": "D"
-        },
-        {
-          "adjetivo": "Obstinado",
-          "puntuacion": 4.0,
           "tipo": "S"
         },
         {
+          "adjetivo": "Obstinado",
+          "tipo": "D"
+        },
+        {
           "adjetivo": "Comunicador",
-          "puntuacion": 1.0,
           "tipo": "I"
         },
         {
           "adjetivo": "Organizado",
-          "puntuacion": 2.0,
           "tipo": "C"
         }
       ],
       "privado": [
         {
           "adjetivo": "Respestuoso",
-          "puntuacion": 3.0,
-          "tipo": "D"
-        },
-        {
-          "adjetivo": "Obstinado",
-          "puntuacion": 4.0,
           "tipo": "S"
         },
         {
+          "adjetivo": "Obstinado",
+          "tipo": "D"
+        },
+        {
           "adjetivo": "Comunicador",
-          "puntuacion": 1.0,
           "tipo": "I"
         },
         {
           "adjetivo": "Organizado",
-          "puntuacion": 2.0,
           "tipo": "C"
         }
       ]
@@ -387,45 +331,37 @@ const discData = {
       "trabajo": [
         {
           "adjetivo": "Competitivo",
-          "puntuacion": 2.0,
-          "tipo": "I"
-        },
-        {
-          "adjetivo": "Estable",
-          "puntuacion": 1.0,
           "tipo": "D"
         },
         {
+          "adjetivo": "Estable",
+          "tipo": "S"
+        },
+        {
           "adjetivo": "Don de gentes",
-          "puntuacion": 3.0,
-          "tipo": "C"
+          "tipo": "I"
         },
         {
           "adjetivo": "Minucioso",
-          "puntuacion": 4.0,
-          "tipo": "S"
+          "tipo": "C"
         }
       ],
       "privado": [
         {
           "adjetivo": "Competitivo",
-          "puntuacion": 3.0,
-          "tipo": "I"
-        },
-        {
-          "adjetivo": "Estable",
-          "puntuacion": 1.0,
           "tipo": "D"
         },
         {
+          "adjetivo": "Estable",
+          "tipo": "S"
+        },
+        {
           "adjetivo": "Don de gentes",
-          "puntuacion": 2.0,
-          "tipo": "C"
+          "tipo": "I"
         },
         {
           "adjetivo": "Minucioso",
-          "puntuacion": 4.0,
-          "tipo": "S"
+          "tipo": "C"
         }
       ]
     },
@@ -434,45 +370,37 @@ const discData = {
       "trabajo": [
         {
           "adjetivo": "Sociable",
-          "puntuacion": 2.0,
-          "tipo": "C"
-        },
-        {
-          "adjetivo": "Dominante",
-          "puntuacion": 1.0,
           "tipo": "I"
         },
         {
+          "adjetivo": "Dominante",
+          "tipo": "D"
+        },
+        {
           "adjetivo": "Reflexivo",
-          "puntuacion": 4.0,
-          "tipo": "S"
+          "tipo": "C"
         },
         {
           "adjetivo": "Adaptable",
-          "puntuacion": 3.0,
-          "tipo": "D"
+          "tipo": "S"
         }
       ],
       "privado": [
         {
           "adjetivo": "Sociable",
-          "puntuacion": 4.0,
-          "tipo": "C"
-        },
-        {
-          "adjetivo": "Dominante",
-          "puntuacion": 1.0,
           "tipo": "I"
         },
         {
+          "adjetivo": "Dominante",
+          "tipo": "D"
+        },
+        {
           "adjetivo": "Reflexivo",
-          "puntuacion": 3.0,
-          "tipo": "S"
+          "tipo": "C"
         },
         {
           "adjetivo": "Adaptable",
-          "puntuacion": 2.0,
-          "tipo": "D"
+          "tipo": "S"
         }
       ]
     },
@@ -481,45 +409,37 @@ const discData = {
       "trabajo": [
         {
           "adjetivo": "Reservado",
-          "puntuacion": 4.0,
-          "tipo": "D"
+          "tipo": "C"
         },
         {
           "adjetivo": "Persuasivo",
-          "puntuacion": 1.0,
-          "tipo": "S"
+          "tipo": "I"
         },
         {
           "adjetivo": "Atento",
-          "puntuacion": 3.0,
-          "tipo": "D"
+          "tipo": "S"
         },
         {
           "adjetivo": "Directo",
-          "puntuacion": 2.0,
-          "tipo": "C"
+          "tipo": "D"
         }
       ],
       "privado": [
         {
           "adjetivo": "Reservado",
-          "puntuacion": 4.0,
-          "tipo": "D"
+          "tipo": "C"
         },
         {
           "adjetivo": "Persuasivo",
-          "puntuacion": 2.0,
-          "tipo": "S"
+          "tipo": "I"
         },
         {
           "adjetivo": "Atento",
-          "puntuacion": 3.0,
-          "tipo": "D"
+          "tipo": "S"
         },
         {
           "adjetivo": "Directo",
-          "puntuacion": 1.0,
-          "tipo": "C"
+          "tipo": "D"
         }
       ]
     },
@@ -528,45 +448,37 @@ const discData = {
       "trabajo": [
         {
           "adjetivo": "Enérgico",
-          "puntuacion": 1.0,
-          "tipo": "D"
-        },
-        {
-          "adjetivo": "Tolerante",
-          "puntuacion": 3.0,
           "tipo": "I"
         },
         {
+          "adjetivo": "Tolerante",
+          "tipo": "S"
+        },
+        {
           "adjetivo": "Decidido",
-          "puntuacion": 2.0,
-          "tipo": "C"
+          "tipo": "D"
         },
         {
           "adjetivo": "Preciso",
-          "puntuacion": 4.0,
-          "tipo": "S"
+          "tipo": "C"
         }
       ],
       "privado": [
         {
           "adjetivo": "Enérgico",
-          "puntuacion": 1.0,
-          "tipo": "D"
-        },
-        {
-          "adjetivo": "Tolerante",
-          "puntuacion": 3.0,
           "tipo": "I"
         },
         {
+          "adjetivo": "Tolerante",
+          "tipo": "S"
+        },
+        {
           "adjetivo": "Decidido",
-          "puntuacion": 2.0,
-          "tipo": "C"
+          "tipo": "D"
         },
         {
           "adjetivo": "Preciso",
-          "puntuacion": 4.0,
-          "tipo": "S"
+          "tipo": "C"
         }
       ]
     },
@@ -575,45 +487,37 @@ const discData = {
       "trabajo": [
         {
           "adjetivo": "Exigente",
-          "puntuacion": 1.0,
-          "tipo": "I"
+          "tipo": "D"
         },
         {
           "adjetivo": "Expresivo",
-          "puntuacion": 4.0,
-          "tipo": "S"
+          "tipo": "I"
         },
         {
           "adjetivo": "Perfeccionista",
-          "puntuacion": 2.0,
           "tipo": "C"
         },
         {
           "adjetivo": "Considerado",
-          "puntuacion": 3.0,
-          "tipo": "D"
+          "tipo": "S"
         }
       ],
       "privado": [
         {
           "adjetivo": "Exigente",
-          "puntuacion": 1.0,
-          "tipo": "I"
+          "tipo": "D"
         },
         {
           "adjetivo": "Expresivo",
-          "puntuacion": 2.0,
-          "tipo": "S"
+          "tipo": "I"
         },
         {
           "adjetivo": "Perfeccionista",
-          "puntuacion": 4.0,
           "tipo": "C"
         },
         {
           "adjetivo": "Considerado",
-          "puntuacion": 3.0,
-          "tipo": "D"
+          "tipo": "S"
         }
       ]
     },
@@ -622,45 +526,37 @@ const discData = {
       "trabajo": [
         {
           "adjetivo": "Efusivo",
-          "puntuacion": 2.0,
-          "tipo": "D"
+          "tipo": "I"
         },
         {
           "adjetivo": "Complaciente",
-          "puntuacion": 4.0,
           "tipo": "S"
         },
         {
           "adjetivo": "Receptivo",
-          "puntuacion": 3.0,
           "tipo": "C"
         },
         {
           "adjetivo": "Innovador",
-          "puntuacion": 1.0,
-          "tipo": "I"
+          "tipo": "D"
         }
       ],
       "privado": [
         {
           "adjetivo": "Efusivo",
-          "puntuacion": 1.0,
-          "tipo": "D"
+          "tipo": "I"
         },
         {
           "adjetivo": "Complaciente",
-          "puntuacion": 3.0,
           "tipo": "S"
         },
         {
           "adjetivo": "Receptivo",
-          "puntuacion": 2.0,
           "tipo": "C"
         },
         {
           "adjetivo": "Innovador",
-          "puntuacion": 4.0,
-          "tipo": "I"
+          "tipo": "D"
         }
       ]
     },
@@ -669,44 +565,36 @@ const discData = {
       "trabajo": [
         {
           "adjetivo": "Asumo retos",
-          "puntuacion": 1.0,
           "tipo": "D"
         },
         {
           "adjetivo": "Paciente",
-          "puntuacion": 4.0,
           "tipo": "S"
         },
         {
           "adjetivo": "Instruido",
-          "puntuacion": 2.0,
           "tipo": "C"
         },
         {
           "adjetivo": "Efusivo",
-          "puntuacion": 3.0,
           "tipo": "I"
         }
       ],
       "privado": [
         {
           "adjetivo": "Asumo retos",
-          "puntuacion": 3.0,
           "tipo": "D"
         },
         {
           "adjetivo": "Paciente",
-          "puntuacion": 4.0,
           "tipo": "S"
         },
         {
           "adjetivo": "Instruido",
-          "puntuacion": 2.0,
           "tipo": "C"
         },
         {
           "adjetivo": "Efusivo",
-          "puntuacion": 1.0,
           "tipo": "I"
         }
       ]
@@ -1875,6 +1763,35 @@ function createChart(canvasId, data, title) {
         return;
     }
     
+    // Plugin personalizado para dibujar una línea horizontal en Y=35
+    const horizontalLinePlugin = {
+        id: 'horizontalLine',
+        beforeDatasetsDraw: function(chart) {
+            if (chart.scales.y) {
+                const yScale = chart.scales.y;
+                const canvas = chart.canvas;
+                const ctx = chart.ctx;
+                const yValue = 35;
+                
+                const lineY = yScale.getPixelForValue(yValue);
+                
+                // Guardar el estado
+                ctx.save();
+                
+                // Configurar el estilo de la línea
+                ctx.beginPath();
+                ctx.moveTo(chart.chartArea.left, lineY);
+                ctx.lineTo(chart.chartArea.right, lineY);
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.stroke();
+                
+                // Restaurar el estado
+                ctx.restore();
+            }
+        }
+    };
+    
     // Asegurar que los valores son numéricos
     const valores = {
         D: parseInt(data.D) || 0,
@@ -1916,7 +1833,16 @@ function createChart(canvasId, data, title) {
                         display: false
                     },
                     title: {
-                        display: false
+                        display: true,
+                        text: title,
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        },
+                        padding: {
+                            top: 10,
+                            bottom: 20
+                        }
                     },
                     tooltip: {
                         callbacks: {
@@ -1947,7 +1873,8 @@ function createChart(canvasId, data, title) {
                         }
                     }
                 }
-            }
+            },
+            plugins: [horizontalLinePlugin]
         });
         console.log(`Gráfico para ${canvasId} creado con éxito`);
     } catch (error) {
@@ -2043,7 +1970,42 @@ function createAdminChart(canvasId, data, title) {
         return;
     }
     
+    // Ajustar el tamaño del canvas para hacerlo más grande
+    canvas.style.width = '100%';
+    canvas.style.height = '350px';
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+    
     const ctx = canvas.getContext('2d');
+    
+    // Plugin personalizado para dibujar una línea horizontal en Y=35
+    const horizontalLinePlugin = {
+        id: 'horizontalLine',
+        beforeDatasetsDraw: function(chart) {
+            if (chart.scales.y) {
+                const yScale = chart.scales.y;
+                const canvas = chart.canvas;
+                const ctx = chart.ctx;
+                const yValue = 35;
+                
+                const lineY = yScale.getPixelForValue(yValue);
+                
+                // Guardar el estado
+                ctx.save();
+                
+                // Configurar el estilo de la línea
+                ctx.beginPath();
+                ctx.moveTo(chart.chartArea.left, lineY);
+                ctx.lineTo(chart.chartArea.right, lineY);
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.stroke();
+                
+                // Restaurar el estado
+                ctx.restore();
+            }
+        }
+    };
     
     // Asegurar que los valores son numéricos
     const valores = {
@@ -2085,7 +2047,16 @@ function createAdminChart(canvasId, data, title) {
                     display: false
                 },
                 title: {
-                    display: false
+                    display: true,
+                    text: title,
+                    font: {
+                        size: 16,
+                        weight: 'bold'
+                    },
+                    padding: {
+                        top: 10,
+                        bottom: 20
+                    }
                 },
                 tooltip: {
                     callbacks: {
@@ -2104,7 +2075,10 @@ function createAdminChart(canvasId, data, title) {
                         color: 'rgba(255, 255, 255, 0.1)'
                     },
                     ticks: {
-                        color: '#a0a0b0'
+                        color: '#a0a0b0',
+                        font: {
+                            size: 12
+                        }
                     }
                 },
                 x: {
@@ -2112,10 +2086,15 @@ function createAdminChart(canvasId, data, title) {
                         display: false
                     },
                     ticks: {
-                        color: '#a0a0b0'
+                        color: '#a0a0b0',
+                        font: {
+                            size: 12,
+                            weight: 'bold'
+                        }
                     }
                 }
             }
-        }
+        },
+        plugins: [horizontalLinePlugin]
     });
 } 
