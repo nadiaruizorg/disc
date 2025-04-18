@@ -2,10 +2,12 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Cuestionario DISC</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
@@ -42,24 +44,27 @@
                 </div>
                 <div class="disc-explanation">
                     <div class="disc-item">
-                        <h3>D - Dominance (Dominancia)</h3>
+                        <h3>D - Dominance</h3>
                         <p>Orientado a resultados, enfoca en acción y decisión rápida.</p>
                     </div>
                     <div class="disc-item">
-                        <h3>I - Influence (Influencia)</h3>
+                        <h3>I - Influence</h3>
                         <p>Orientado a personas, comunicativo y entusiasta.</p>
                     </div>
                     <div class="disc-item">
-                        <h3>S - Steadiness (Estabilidad)</h3>
+                        <h3>S - Steadiness</h3>
                         <p>Orientado a la colaboración, paciente y confiable.</p>
                     </div>
                     <div class="disc-item">
-                        <h3>C - Compliance (Cumplimiento)</h3>
+                        <h3>C - Compliance</h3>
                         <p>Orientado a la calidad, analítico y meticuloso.</p>
                     </div>
                 </div>
             </div>
-            <button id="restart-btn" class="btn">Realizar de nuevo</button>
+            <div id="email-status" class="email-status"></div>
+            <div class="results-actions">
+                <button id="restart-btn" class="btn">Realizar de nuevo</button>
+            </div>
         </div>
     </div>
     <script src="script.js"></script>

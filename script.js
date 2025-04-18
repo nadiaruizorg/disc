@@ -82,6 +82,18 @@ const discQuestions = [
     }
 ];
 
+// Configuración EmailJS
+(function() {
+    // IMPORTANTE: Antes de usar, debes:
+    // 1. Crear una cuenta en https://www.emailjs.com/
+    // 2. Crear un servicio de correo (Gmail, Outlook, etc)
+    // 3. Crear una plantilla de correo
+    // 4. Reemplazar 'REEMPLAZAR_CON_TU_PUBLIC_KEY' con tu clave pública
+    // 5. Reemplazar 'default_service' con el ID de tu servicio
+    // 6. Reemplazar 'template_id' con el ID de tu plantilla
+    emailjs.init("REEMPLAZAR_CON_TU_PUBLIC_KEY");
+})();
+
 // Variables globales
 let currentQuestionIndex = 0;
 let answers = {
@@ -91,6 +103,7 @@ let answers = {
     C: 0
 };
 let userName = '';
+let emailSent = false;
 
 // Elementos del DOM
 const introSection = document.getElementById('intro-section');
@@ -103,6 +116,7 @@ const questionContainer = document.getElementById('question-container');
 const progressBar = document.getElementById('progress');
 const resultName = document.getElementById('result-name');
 const restartBtn = document.getElementById('restart-btn');
+const emailStatus = document.getElementById('email-status');
 
 // Iniciar el cuestionario
 startBtn.addEventListener('click', () => {
@@ -127,31 +141,61 @@ function loadQuestion(index) {
     
     // Crear el HTML para la pregunta
     questionContainer.innerHTML = `
-        <h3>Pregunta ${index + 1} de ${discQuestions.length}</h3>
-        <p class="question-text">${question.question}</p>
+        <div class="question-container">
+            <h3>Pregunta ${index + 1} de ${discQuestions.length}</h3>
+            <p class="question-text">${question.question}</p>
+        </div>
         <div class="options">
             <div class="option-group">
                 <input type="radio" id="option1" name="answer" value="5" ${getUserAnswer(index) === 5 ? 'checked' : ''}>
-                <label for="option1">Totalmente de acuerdo</label>
+                <label for="option1" class="option-label">Totalmente de acuerdo</label>
             </div>
             <div class="option-group">
                 <input type="radio" id="option2" name="answer" value="4" ${getUserAnswer(index) === 4 ? 'checked' : ''}>
-                <label for="option2">De acuerdo</label>
+                <label for="option2" class="option-label">De acuerdo</label>
             </div>
             <div class="option-group">
                 <input type="radio" id="option3" name="answer" value="3" ${getUserAnswer(index) === 3 ? 'checked' : ''}>
-                <label for="option3">Neutral</label>
+                <label for="option3" class="option-label">Neutral</label>
             </div>
             <div class="option-group">
                 <input type="radio" id="option4" name="answer" value="2" ${getUserAnswer(index) === 2 ? 'checked' : ''}>
-                <label for="option4">En desacuerdo</label>
+                <label for="option4" class="option-label">En desacuerdo</label>
             </div>
             <div class="option-group">
                 <input type="radio" id="option5" name="answer" value="1" ${getUserAnswer(index) === 1 ? 'checked' : ''}>
-                <label for="option5">Totalmente en desacuerdo</label>
+                <label for="option5" class="option-label">Totalmente en desacuerdo</label>
             </div>
         </div>
     `;
+    
+    // Añadir evento click a las opciones para avanzar automáticamente
+    const optionGroups = document.querySelectorAll('.option-group');
+    optionGroups.forEach(group => {
+        group.addEventListener('click', () => {
+            const radio = group.querySelector('input[type="radio"]');
+            if (radio) {
+                radio.checked = true;
+                
+                // Mostrar la selección visualmente
+                optionGroups.forEach(g => g.classList.remove('selected'));
+                group.classList.add('selected');
+                
+                // Pequeña pausa para mostrar la selección antes de avanzar
+                setTimeout(() => {
+                    if (currentQuestionIndex < discQuestions.length - 1) {
+                        if (saveAnswer()) {
+                            currentQuestionIndex++;
+                            loadQuestion(currentQuestionIndex);
+                        }
+                    } else if (saveAnswer()) {
+                        calculateResults();
+                        showResults();
+                    }
+                }, 300);
+            }
+        });
+    });
     
     // Actualizar visibilidad de los botones
     prevBtn.style.visibility = index === 0 ? 'hidden' : 'visible';
@@ -160,8 +204,8 @@ function loadQuestion(index) {
 
 // Obtener respuesta del usuario para una pregunta específica
 function getUserAnswer(questionIndex) {
-    const questionType = discQuestions[questionIndex].type;
-    return sessionStorage.getItem(`question_${questionIndex}`);
+    const value = sessionStorage.getItem(`question_${questionIndex}`);
+    return value ? parseInt(value) : null;
 }
 
 // Guardar respuesta actual
@@ -232,7 +276,7 @@ function showResults() {
     
     // Crear gráfica de resultados
     const ctx = document.getElementById('results-chart').getContext('2d');
-    new Chart(ctx, {
+    const chart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: ['D (Dominancia)', 'I (Influencia)', 'S (Estabilidad)', 'C (Cumplimiento)'],
@@ -240,14 +284,14 @@ function showResults() {
                 label: 'Porcentaje',
                 data: [answers.D, answers.I, answers.S, answers.C],
                 backgroundColor: [
-                    'rgba(255, 99, 132, 0.7)',
-                    'rgba(54, 162, 235, 0.7)',
-                    'rgba(255, 206, 86, 0.7)',
-                    'rgba(75, 192, 192, 0.7)'
+                    'rgba(255, 99, 132, 0.8)',
+                    'rgba(80, 162, 235, 0.8)',
+                    'rgba(255, 206, 86, 0.8)',
+                    'rgba(75, 192, 192, 0.8)'
                 ],
                 borderColor: [
                     'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
+                    'rgba(80, 162, 235, 1)',
                     'rgba(255, 206, 86, 1)',
                     'rgba(75, 192, 192, 1)'
                 ],
@@ -259,7 +303,21 @@ function showResults() {
             scales: {
                 y: {
                     beginAtZero: true,
-                    max: 100
+                    max: 100,
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: '#e1e1e6'
+                    }
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: '#e1e1e6'
+                    }
                 }
             },
             plugins: {
@@ -271,11 +329,55 @@ function showResults() {
                         label: function(context) {
                             return `${context.parsed.y}%`;
                         }
-                    }
+                    },
+                    backgroundColor: 'rgba(28, 28, 37, 0.9)',
+                    titleColor: '#ffffff',
+                    bodyColor: '#e1e1e6',
+                    borderColor: 'rgba(45, 45, 58, 1)',
+                    borderWidth: 1
                 }
             }
         }
     });
+
+    // Enviar resultados por correo
+    sendResultsByEmail();
+}
+
+// Función para enviar resultados por correo
+function sendResultsByEmail() {
+    if (emailSent) return;
+    
+    emailStatus.textContent = "Enviando resultados...";
+    emailStatus.className = "email-status sending";
+    
+    // Preparar el contenido del correo
+    const resultsSummary = `
+        Nombre: ${userName}
+        
+        Resultados DISC:
+        - Dominancia (D): ${answers.D}%
+        - Influencia (I): ${answers.I}%
+        - Estabilidad (S): ${answers.S}%
+        - Cumplimiento (C): ${answers.C}%
+    `;
+    
+    const emailParams = {
+        to_email: "namaruiz@gmail.com",
+        subject: `Resultados Cuestionario DISC - ${userName}`,
+        message: resultsSummary
+    };
+    
+    // Enviar el correo usando EmailJS
+    emailjs.send('default_service', 'template_id', emailParams)
+        .then(function(response) {
+            emailStatus.textContent = "¡Resultados enviados correctamente!";
+            emailStatus.className = "email-status success";
+            emailSent = true;
+        }, function(error) {
+            emailStatus.textContent = "Error al enviar resultados. Por favor, inténtalo de nuevo.";
+            emailStatus.className = "email-status error";
+        });
 }
 
 // Reiniciar el cuestionario
@@ -287,9 +389,14 @@ restartBtn.addEventListener('click', () => {
     
     // Reiniciar variables
     currentQuestionIndex = 0;
+    emailSent = false;
     
     // Volver a la pantalla inicial
     resultsSection.classList.add('hidden');
     introSection.classList.remove('hidden');
     document.getElementById('username').value = userName;
+    
+    // Limpiar el estado del correo
+    emailStatus.textContent = "";
+    emailStatus.className = "email-status";
 }); 
