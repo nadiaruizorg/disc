@@ -13,12 +13,13 @@ Esta aplicación web permite a los usuarios completar un cuestionario DISC (Domi
 
 ## Archivos del Proyecto
 
-- `index.html`: Página principal con el cuestionario DISC
-- `script.js`: Lógica principal de la aplicación
-- `styles.css`: Estilos de la aplicación
-- `test_results.html`: Página de prueba para visualizar resultados de ejemplo
-- `admin_test.html`: Panel de administración para ver resultados de todos los usuarios
-- `firebase_test.html`: Herramienta de diagnóstico para la conexión con Firebase
+- `index.html` - Página principal con el cuestionario DISC
+- `script.js` - Lógica principal de la aplicación
+- `styles.css` - Estilos de la aplicación
+- `favicon.ico` - Icono del sitio
+- `.gitignore` - Configuración para ignorar archivos innecesarios
+- `LICENSE` - Licencia MIT del proyecto
+- `README.md` - Este archivo de documentación
 
 ## Configuración
 
@@ -29,7 +30,7 @@ Esta aplicación web permite a los usuarios completar un cuestionario DISC (Domi
 
 ### Configuración de Firebase
 
-La aplicación ya incluye la configuración de Firebase, pero si deseas usar tu propia base de datos, debes modificar el objeto `firebaseConfig` en los archivos JS:
+La aplicación ya incluye la configuración de Firebase, pero si deseas usar tu propia base de datos, debes modificar el objeto `firebaseConfig` en script.js:
 
 ```javascript
 const firebaseConfig = {
