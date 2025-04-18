@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Resultados DISC</title>
+    <link rel="stylesheet" href="styles.css?v=1.5">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <style>
+        /* Estilos específicos solo para la página de resultados detallados */
+        .user-info {
+            background-color: var(--card-background);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid var(--card-border);
+        }
+        
+        .user-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #f0f0f5;
+            margin-bottom: 5px;
+        }
+        
+        .test-date {
+            font-size: 0.9rem;
+            color: #a0a0b0;
+        }
+        
+        .scores-table {
+            width: 100%;
+            margin-top: 20px;
+            margin-bottom: 25px;
+            border-collapse: collapse;
+        }
+        
+        .scores-table th,
+        .scores-table td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid var(--card-border);
+        }
+        
+        .scores-table th {
+            background-color: var(--option-background);
+            color: #f0f0f5;
+            font-weight: 600;
+        }
+        
+        .scores-table td.score {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Resultados DISC</h1>
+        </header>
+        
+        <div class="user-info">
+            <div class="user-name" id="user-name">Nombre del Usuario</div>
+            <div class="test-date" id="test-date">Fecha: 18/04/2025</div>
+        </div>
+        
+        <div class="results-container">
+            <div class="chart-section">
+                <h2>Ámbito Laboral</h2>
+                <div class="chart-container">
+                    <canvas id="chart-trabajo"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-section">
+                <h2>Ámbito Privado</h2>
+                <div class="chart-container">
+                    <canvas id="chart-privado"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section disc-explanation">
+            <h2>Tus resultados en detalle</h2>
+            
+            <table class="scores-table">
+                <thead>
+                    <tr>
+                        <th>Dimensión</th>
+                        <th>Trabajo</th>
+                        <th>Privado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="disc-color d"></span> D (Dominancia)</td>
+                        <td class="score" id="score-d-trabajo">-</td>
+                        <td class="score" id="score-d-privado">-</td>
+                    </tr>
+                    <tr>
+                        <td><span class="disc-color i"></span> I (Influencia)</td>
+                        <td class="score" id="score-i-trabajo">-</td>
+                        <td class="score" id="score-i-privado">-</td>
+                    </tr>
+                    <tr>
+                        <td><span class="disc-color s"></span> S (Estabilidad)</td>
+                        <td class="score" id="score-s-trabajo">-</td>
+                        <td class="score" id="score-s-privado">-</td>
+                    </tr>
+                    <tr>
+                        <td><span class="disc-color c"></span> C (Cumplimiento)</td>
+                        <td class="score" id="score-c-trabajo">-</td>
+                        <td class="score" id="score-c-privado">-</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="disc-item">
+                <div class="disc-title"><span class="disc-color d"></span> D - Dominancia</div>
+                <div class="disc-description">
+                    Personas directas, decisivas y orientadas a resultados. Buscan control, son competitivas y enfocadas en objetivos.
+                </div>
+            </div>
+            
+            <div class="disc-item">
+                <div class="disc-title"><span class="disc-color i"></span> I - Influencia</div>
+                <div class="disc-description">
+                    Personas sociables, comunicativas y entusiastas. Disfrutan interactuando con otros, son optimistas y persuasivas.
+                </div>
+            </div>
+            
+            <div class="disc-item">
+                <div class="disc-title"><span class="disc-color s"></span> S - Estabilidad</div>
+                <div class="disc-description">
+                    Personas pacientes, leales y colaborativas. Valoran la armonía, la consistencia y prefieren ambientes predecibles.
+                </div>
+            </div>
+            
+            <div class="disc-item">
+                <div class="disc-title"><span class="disc-color c"></span> C - Cumplimiento</div>
+                <div class="disc-description">
+                    Personas analíticas, precisas y sistemáticas. Se enfocan en la calidad, exactitud y siguen procedimientos.
+                </div>
+            </div>
+        </div>
+        
+        <div class="actions">
+            <button id="restart-button" class="button">Reiniciar Test</button>
+            <a href="index.html" class="button secondary">Volver</a>
+        </div>
+    </div>
+    
+    <script>
+        // Función para obtener los resultados del test desde localStorage o URL
+        function obtenerResultadosTest() {
+            // Intentar obtener resultados de la URL
+            const params = new URLSearchParams(window.location.search);
+            const nombreUsuario = params.get('usuario');
+            
+            // Si hay un nombre de usuario en la URL, intentar obtener sus resultados
+            if (nombreUsuario) {
+                // Intentar obtener del localStorage primero
+                const datosLocalStorage = localStorage.getItem(`resultados_${nombreUsuario}`);
+                if (datosLocalStorage) {
+                    try {
+                        const datos = JSON.parse(datosLocalStorage);
+                        return {
+                            nombre: nombreUsuario,
+                            fecha: datos.fecha ? new Date(datos.fecha) : new Date(),
+                            resultados: datos.resultados
+                        };
+                    } catch (error) {
+                        console.error("Error al procesar datos de localStorage:", error);
+                    }
+                }
+                
+                // Si no se encuentra en localStorage, buscar en sessionStorage
+                const clave = `disc_results_${nombreUsuario}`;
+                const resultadosString = sessionStorage.getItem(clave);
+                if (resultadosString) {
+                    try {
+                        return {
+                            nombre: nombreUsuario,
+                            fecha: new Date(),
+                            resultados: JSON.parse(resultadosString)
+                        };
+                    } catch (error) {
+                        console.error("Error al procesar datos de sessionStorage:", error);
+                    }
+                }
+            }
+            
+            // Si no hay usuario en la URL o no se encuentran resultados, 
+            // buscar el último resultado guardado para cualquier usuario
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('resultados_')) {
+                    try {
+                        const datos = JSON.parse(localStorage.getItem(key));
+                        const nombreUsuario = key.replace('resultados_', '');
+                        return {
+                            nombre: nombreUsuario,
+                            fecha: datos.fecha ? new Date(datos.fecha) : new Date(),
+                            resultados: datos.resultados
+                        };
+                    } catch (error) {
+                        console.error("Error al procesar datos de localStorage:", error);
+                    }
+                }
+            }
+            
+            // Si no se encuentran resultados, usar datos de ejemplo
+            return {
+                nombre: "Usuario de Ejemplo",
+                fecha: new Date(),
+                resultados: {
+                    trabajo: {
+                        D: 32,
+                        I: 28,
+                        S: 22,
+                        C: 18
+                    },
+                    privado: {
+                        D: 24,
+                        I: 30,
+                        S: 26,
+                        C: 20
+                    }
+                }
+            };
+        }
+        
+        // Función para inicializar la página
+        function init() {
+            // Obtener resultados del test
+            const datosUsuario = obtenerResultadosTest();
+            const resultados = datosUsuario.resultados;
+            
+            // Actualizar nombre y fecha
+            document.getElementById('user-name').textContent = datosUsuario.nombre;
+            document.getElementById('test-date').textContent = 'Fecha: ' + datosUsuario.fecha.toLocaleDateString();
+            
+            // Actualizar puntuaciones en la tabla
+            document.getElementById('score-d-trabajo').textContent = resultados.trabajo.D;
+            document.getElementById('score-i-trabajo').textContent = resultados.trabajo.I;
+            document.getElementById('score-s-trabajo').textContent = resultados.trabajo.S;
+            document.getElementById('score-c-trabajo').textContent = resultados.trabajo.C;
+            
+            document.getElementById('score-d-privado').textContent = resultados.privado.D;
+            document.getElementById('score-i-privado').textContent = resultados.privado.I;
+            document.getElementById('score-s-privado').textContent = resultados.privado.S;
+            document.getElementById('score-c-privado').textContent = resultados.privado.C;
+            
+            // Crear gráficos
+            createChart('chart-trabajo', resultados.trabajo, 'Ámbito Laboral');
+            createChart('chart-privado', resultados.privado, 'Ámbito Privado');
+            
+            // Eventos para botones
+            document.getElementById('restart-button').addEventListener('click', function() {
+                window.location.href = 'index.html';
+            });
+        }
+        
+        // Crear gráfico
+        function createChart(canvasId, data, title) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['D', 'I', 'S', 'C'],
+                    datasets: [{
+                        data: [data.D, data.I, data.S, data.C],
+                        backgroundColor: [
+                            'rgba(231, 76, 60, 0.7)',    // D - rojo
+                            'rgba(241, 196, 15, 0.7)',   // I - amarillo (cambiado)
+                            'rgba(46, 204, 113, 0.7)',   // S - verde
+                            'rgba(52, 152, 219, 0.7)'    // C - azul (cambiado)
+                        ],
+                        borderColor: [
+                            'rgba(231, 76, 60, 1)',      // D - rojo
+                            'rgba(241, 196, 15, 1)',     // I - amarillo (cambiado)
+                            'rgba(46, 204, 113, 1)',     // S - verde
+                            'rgba(52, 152, 219, 1)'      // C - azul (cambiado)
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const labels = ['Dominancia', 'Influencia', 'Estabilidad', 'Cumplimiento'];
+                                    return labels[context.dataIndex] + ': ' + context.raw;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 56,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#a0a0b0'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#a0a0b0'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Inicializar cuando el documento esté listo
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html> 

@@ -715,8 +715,8 @@ const discData = {
   "instrucciones": {
     "titulo": "Cuestionario DISC",
     "descripcion": "En cada grupo de 4 adjetivos, puntúa del 1 al 4 según te identifiques con ellos, donde 1 es el más representativo y 4 el menos.",
-    "trabajo": "Contesta pensando en cómo te comportas en tu ámbito laboral",
-    "privado": "Contesta pensando en cómo te comportas en tu ámbito privado"
+    "trabajo": "Ámbito laboral",
+    "privado": "Ámbito privado"
   }
 };
 
@@ -772,7 +772,7 @@ startButton.addEventListener('click', () => {
         mostrarPanelAdmin();
     } else {
         // Usuario normal, iniciar cuestionario
-        introSection.classList.add('hidden');
+    introSection.classList.add('hidden');
         discSection.classList.remove('hidden');
         contextTitle.textContent = discData.instrucciones.trabajo;
         loadQuestion();
@@ -807,23 +807,73 @@ function mostrarPanelAdmin() {
                 <div id="user-results-container" class="hidden">
                     <div class="user-results-header">
                         <h3 id="selected-user-name"></h3>
-                        <button id="back-to-users-btn" class="button">Volver a la lista</button>
             </div>
-                    <div class="results-charts">
-                        <div class="chart-container">
-                            <h4>Ámbito Laboral</h4>
-                            <canvas id="admin-chart-trabajo"></canvas>
+                    
+                    <div class="user-info">
+                        <div class="user-name" id="admin-user-name"></div>
+                        <div class="test-date" id="admin-test-date"></div>
             </div>
-                        <div class="chart-container">
-                            <h4>Ámbito Privado</h4>
-                            <canvas id="admin-chart-privado"></canvas>
+                    
+                    <div class="results-container">
+                        <div class="chart-section">
+                            <h3>Ámbito Laboral</h3>
+                            <div class="chart-container">
+                                <canvas id="admin-chart-trabajo"></canvas>
             </div>
             </div>
-        </div>
+                        <div class="chart-section">
+                            <h3>Ámbito Privado</h3>
+                            <div class="chart-container">
+                                <canvas id="admin-chart-privado"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section disc-explanation">
+                        <h3>Detalles de los resultados</h3>
+                        <table class="scores-table">
+                            <thead>
+                                <tr>
+                                    <th>Dimensión</th>
+                                    <th>Trabajo</th>
+                                    <th>Privado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="disc-color d"></span> D (Dominancia)</td>
+                                    <td class="score" id="admin-score-d-trabajo">-</td>
+                                    <td class="score" id="admin-score-d-privado">-</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="disc-color i"></span> I (Influencia)</td>
+                                    <td class="score" id="admin-score-i-trabajo">-</td>
+                                    <td class="score" id="admin-score-i-privado">-</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="disc-color s"></span> S (Estabilidad)</td>
+                                    <td class="score" id="admin-score-s-trabajo">-</td>
+                                    <td class="score" id="admin-score-s-privado">-</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="disc-color c"></span> C (Cumplimiento)</td>
+                                    <td class="score" id="admin-score-c-trabajo">-</td>
+                                    <td class="score" id="admin-score-c-privado">-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="admin-buttons" style="text-align: center; margin-top: 20px;">
+                        <button id="back-to-users-btn" class="button" style="margin: 0 auto 15px auto; display: block; max-width: 300px;">Volver a la lista</button>
+                    </div>
+                </div>
             </div>
             
-            <button id="logout-btn" class="button">Cerrar sesión</button>
-        `;
+            <div style="text-align: center; margin-top: 20px;">
+                <button id="logout-btn" class="button" style="margin: 0 auto; display: block; max-width: 300px;">Cerrar sesión</button>
+        </div>
+    `;
         
         document.body.appendChild(adminSection);
         
@@ -961,6 +1011,7 @@ function mostrarResultadosUsuario(usuario) {
     
     // Mostrar el nombre del usuario seleccionado
     document.getElementById('selected-user-name').textContent = `Resultados de ${usuario}`;
+    document.getElementById('admin-user-name').textContent = usuario;
     
     // Verificar si Firebase está disponible
     if (!firebaseInitialized || !db) {
@@ -974,39 +1025,39 @@ function mostrarResultadosUsuario(usuario) {
                 const datosUsuario = JSON.parse(datosGuardados);
                 const resultadosUsuario = datosUsuario.resultados;
                 
-                // Limpiar canvas previos si existen
-                const trabajoCanvas = document.getElementById('admin-chart-trabajo');
-                const privadoCanvas = document.getElementById('admin-chart-privado');
-                
-                // Asegurarse de que los canvas estén limpios
-                const trabajoCtx = trabajoCanvas.getContext('2d');
-                const privadoCtx = privadoCanvas.getContext('2d');
-                
-                trabajoCtx.clearRect(0, 0, trabajoCanvas.width, trabajoCanvas.height);
-                privadoCtx.clearRect(0, 0, privadoCanvas.width, privadoCanvas.height);
-                
-                // Crear gráficos
-                createChart('admin-chart-trabajo', resultadosUsuario.trabajo, 'Ámbito Laboral');
-                createChart('admin-chart-privado', resultadosUsuario.privado, 'Ámbito Privado');
-                
-                // Mostrar fecha del test
+                // Mostrar detalles
                 const fechaTest = new Date(datosUsuario.fecha || new Date());
                 const fechaFormateada = fechaTest.toLocaleDateString() + ' ' + fechaTest.toLocaleTimeString();
-                
-                // Añadir detalles adicionales
-                const detalles = document.createElement('div');
-                detalles.className = 'user-details';
-                detalles.innerHTML = `
-                    <p><strong>Fecha:</strong> ${fechaFormateada}</p>
-                    <p><small>Resultados cargados desde almacenamiento local</small></p>
-                `;
-                
-                // Añadir detalles antes de los gráficos
-                const headerContainer = document.querySelector('.user-results-header');
-                if (headerContainer.querySelector('.user-details')) {
-                    headerContainer.querySelector('.user-details').remove();
+                document.getElementById('admin-test-date').textContent = `Fecha: ${fechaFormateada}`;
+
+                // Actualizar puntuaciones en la tabla
+                document.getElementById('admin-score-d-trabajo').textContent = resultadosUsuario.trabajo.D;
+                document.getElementById('admin-score-i-trabajo').textContent = resultadosUsuario.trabajo.I;
+                document.getElementById('admin-score-s-trabajo').textContent = resultadosUsuario.trabajo.S;
+                document.getElementById('admin-score-c-trabajo').textContent = resultadosUsuario.trabajo.C;
+
+                document.getElementById('admin-score-d-privado').textContent = resultadosUsuario.privado.D;
+                document.getElementById('admin-score-i-privado').textContent = resultadosUsuario.privado.I;
+                document.getElementById('admin-score-s-privado').textContent = resultadosUsuario.privado.S;
+                document.getElementById('admin-score-c-privado').textContent = resultadosUsuario.privado.C;
+
+                // Asegurarse de que los canvas estén limpios
+                const trabajoCanvas = document.getElementById('admin-chart-trabajo');
+                const privadoCanvas = document.getElementById('admin-chart-privado');
+                if (trabajoCanvas && privadoCanvas) {
+                    const trabajoCtx = trabajoCanvas.getContext('2d');
+                    const privadoCtx = privadoCanvas.getContext('2d');
+                    
+                    trabajoCtx.clearRect(0, 0, trabajoCanvas.width, trabajoCanvas.height);
+                    privadoCtx.clearRect(0, 0, privadoCanvas.width, privadoCanvas.height);
+
+                    // Crear gráficos con los valores correctos
+                    console.log("Datos para gráfico trabajo:", resultadosUsuario.trabajo);
+                    console.log("Datos para gráfico privado:", resultadosUsuario.privado);
+                    
+                    createAdminChart('admin-chart-trabajo', resultadosUsuario.trabajo, 'Ámbito Laboral');
+                    createAdminChart('admin-chart-privado', resultadosUsuario.privado, 'Ámbito Privado');
                 }
-                headerContainer.appendChild(detalles);
                 
                 return;
             } catch (error) {
@@ -1027,38 +1078,39 @@ function mostrarResultadosUsuario(usuario) {
                 const datosUsuario = doc.data();
                 const resultadosUsuario = datosUsuario.resultados;
                 
-                // Limpiar canvas previos si existen
+                // Mostrar detalles
+                const fechaTest = new Date(datosUsuario.fecha || new Date());
+                const fechaFormateada = fechaTest.toLocaleDateString() + ' ' + fechaTest.toLocaleTimeString();
+                document.getElementById('admin-test-date').textContent = `Fecha: ${fechaFormateada}`;
+
+                // Actualizar puntuaciones en la tabla
+                document.getElementById('admin-score-d-trabajo').textContent = resultadosUsuario.trabajo.D;
+                document.getElementById('admin-score-i-trabajo').textContent = resultadosUsuario.trabajo.I;
+                document.getElementById('admin-score-s-trabajo').textContent = resultadosUsuario.trabajo.S;
+                document.getElementById('admin-score-c-trabajo').textContent = resultadosUsuario.trabajo.C;
+
+                document.getElementById('admin-score-d-privado').textContent = resultadosUsuario.privado.D;
+                document.getElementById('admin-score-i-privado').textContent = resultadosUsuario.privado.I;
+                document.getElementById('admin-score-s-privado').textContent = resultadosUsuario.privado.S;
+                document.getElementById('admin-score-c-privado').textContent = resultadosUsuario.privado.C;
+
+                // Asegurarse de que los canvas estén limpios
                 const trabajoCanvas = document.getElementById('admin-chart-trabajo');
                 const privadoCanvas = document.getElementById('admin-chart-privado');
-                
-                // Asegurarse de que los canvas estén limpios
-                const trabajoCtx = trabajoCanvas.getContext('2d');
-                const privadoCtx = privadoCanvas.getContext('2d');
-                
-                trabajoCtx.clearRect(0, 0, trabajoCanvas.width, trabajoCanvas.height);
-                privadoCtx.clearRect(0, 0, privadoCanvas.width, privadoCanvas.height);
-                
-                // Crear gráficos
-                createChart('admin-chart-trabajo', resultadosUsuario.trabajo, 'Ámbito Laboral');
-                createChart('admin-chart-privado', resultadosUsuario.privado, 'Ámbito Privado');
-                
-                // Mostrar fecha del test
-                const fechaTest = datosUsuario.fecha ? new Date(datosUsuario.fecha.toDate()) : new Date();
-                const fechaFormateada = fechaTest.toLocaleDateString() + ' ' + fechaTest.toLocaleTimeString();
-                
-                // Añadir detalles adicionales
-                const detalles = document.createElement('div');
-                detalles.className = 'user-details';
-                detalles.innerHTML = `
-                    <p><strong>Fecha:</strong> ${fechaFormateada}</p>
-                `;
-                
-                // Añadir detalles antes de los gráficos
-                const headerContainer = document.querySelector('.user-results-header');
-                if (headerContainer.querySelector('.user-details')) {
-                    headerContainer.querySelector('.user-details').remove();
+                if (trabajoCanvas && privadoCanvas) {
+                    const trabajoCtx = trabajoCanvas.getContext('2d');
+                    const privadoCtx = privadoCanvas.getContext('2d');
+                    
+                    trabajoCtx.clearRect(0, 0, trabajoCanvas.width, trabajoCanvas.height);
+                    privadoCtx.clearRect(0, 0, privadoCanvas.width, privadoCanvas.height);
+
+                    // Crear gráficos con los valores correctos
+                    console.log("Datos para gráfico trabajo:", resultadosUsuario.trabajo);
+                    console.log("Datos para gráfico privado:", resultadosUsuario.privado);
+                    
+                    createAdminChart('admin-chart-trabajo', resultadosUsuario.trabajo, 'Ámbito Laboral');
+                    createAdminChart('admin-chart-privado', resultadosUsuario.privado, 'Ámbito Privado');
                 }
-                headerContainer.appendChild(detalles);
                 
             } else {
                 // Intentar buscar en localStorage como respaldo
@@ -1069,30 +1121,43 @@ function mostrarResultadosUsuario(usuario) {
                         const datosUsuario = JSON.parse(datosGuardados);
                         const resultadosUsuario = datosUsuario.resultados;
                         
-                        // Crear gráficos
-                        createChart('admin-chart-trabajo', resultadosUsuario.trabajo, 'Ámbito Laboral');
-                        createChart('admin-chart-privado', resultadosUsuario.privado, 'Ámbito Privado');
-                        
                         // Mostrar detalles
                         const fechaTest = new Date(datosUsuario.fecha || new Date());
                         const fechaFormateada = fechaTest.toLocaleDateString() + ' ' + fechaTest.toLocaleTimeString();
-                        
-                        const detalles = document.createElement('div');
-                        detalles.className = 'user-details';
-                        detalles.innerHTML = `
-                            <p><strong>Fecha:</strong> ${fechaFormateada}</p>
-                            <p><small>Resultados cargados desde almacenamiento local</small></p>
-                        `;
-                        
-                        const headerContainer = document.querySelector('.user-results-header');
-                        if (headerContainer.querySelector('.user-details')) {
-                            headerContainer.querySelector('.user-details').remove();
+                        document.getElementById('admin-test-date').textContent = `Fecha: ${fechaFormateada}`;
+
+                        // Actualizar puntuaciones en la tabla
+                        document.getElementById('admin-score-d-trabajo').textContent = resultadosUsuario.trabajo.D;
+                        document.getElementById('admin-score-i-trabajo').textContent = resultadosUsuario.trabajo.I;
+                        document.getElementById('admin-score-s-trabajo').textContent = resultadosUsuario.trabajo.S;
+                        document.getElementById('admin-score-c-trabajo').textContent = resultadosUsuario.trabajo.C;
+
+                        document.getElementById('admin-score-d-privado').textContent = resultadosUsuario.privado.D;
+                        document.getElementById('admin-score-i-privado').textContent = resultadosUsuario.privado.I;
+                        document.getElementById('admin-score-s-privado').textContent = resultadosUsuario.privado.S;
+                        document.getElementById('admin-score-c-privado').textContent = resultadosUsuario.privado.C;
+
+                        // Asegurarse de que los canvas estén limpios
+                        const trabajoCanvas = document.getElementById('admin-chart-trabajo');
+                        const privadoCanvas = document.getElementById('admin-chart-privado');
+                        if (trabajoCanvas && privadoCanvas) {
+                            const trabajoCtx = trabajoCanvas.getContext('2d');
+                            const privadoCtx = privadoCanvas.getContext('2d');
+                            
+                            trabajoCtx.clearRect(0, 0, trabajoCanvas.width, trabajoCanvas.height);
+                            privadoCtx.clearRect(0, 0, privadoCanvas.width, privadoCanvas.height);
+
+                            // Crear gráficos con los valores correctos
+                            console.log("Datos para gráfico trabajo:", resultadosUsuario.trabajo);
+                            console.log("Datos para gráfico privado:", resultadosUsuario.privado);
+                            
+                            createAdminChart('admin-chart-trabajo', resultadosUsuario.trabajo, 'Ámbito Laboral');
+                            createAdminChart('admin-chart-privado', resultadosUsuario.privado, 'Ámbito Privado');
                         }
-                        headerContainer.appendChild(detalles);
                         
                     } catch (error) {
                         console.error("Error al procesar datos locales:", error);
-                        userResultsContainer.innerHTML = `<p class="error">Error al cargar los resultados.</p>`;
+                        userResultsContainer.innerHTML = `<p class="error">Error al cargar los resultados del usuario.</p>`;
                     }
                 } else {
                     userResultsContainer.innerHTML = `<p>No se encontraron resultados para ${usuario}</p>`;
@@ -1100,9 +1165,9 @@ function mostrarResultadosUsuario(usuario) {
             }
         })
         .catch((error) => {
-            console.error("Error al obtener resultados desde Firebase:", error);
+            console.error("Error al obtener resultados:", error);
             
-            // Intentar buscar en localStorage como respaldo
+            // Intentar cargar desde localStorage como respaldo
             const datosGuardados = localStorage.getItem(`resultados_${usuario}`);
             
             if (datosGuardados) {
@@ -1110,33 +1175,46 @@ function mostrarResultadosUsuario(usuario) {
                     const datosUsuario = JSON.parse(datosGuardados);
                     const resultadosUsuario = datosUsuario.resultados;
                     
-                    // Crear gráficos
-                    createChart('admin-chart-trabajo', resultadosUsuario.trabajo, 'Ámbito Laboral');
-                    createChart('admin-chart-privado', resultadosUsuario.privado, 'Ámbito Privado');
-                    
                     // Mostrar detalles
                     const fechaTest = new Date(datosUsuario.fecha || new Date());
                     const fechaFormateada = fechaTest.toLocaleDateString() + ' ' + fechaTest.toLocaleTimeString();
-                    
-                    const detalles = document.createElement('div');
-                    detalles.className = 'user-details';
-                    detalles.innerHTML = `
-                        <p><strong>Fecha:</strong> ${fechaFormateada}</p>
-                        <p><small>Resultados cargados desde almacenamiento local</small></p>
-                    `;
-                    
-                    const headerContainer = document.querySelector('.user-results-header');
-                    if (headerContainer.querySelector('.user-details')) {
-                        headerContainer.querySelector('.user-details').remove();
+                    document.getElementById('admin-test-date').textContent = `Fecha: ${fechaFormateada}`;
+
+                    // Actualizar puntuaciones en la tabla
+                    document.getElementById('admin-score-d-trabajo').textContent = resultadosUsuario.trabajo.D;
+                    document.getElementById('admin-score-i-trabajo').textContent = resultadosUsuario.trabajo.I;
+                    document.getElementById('admin-score-s-trabajo').textContent = resultadosUsuario.trabajo.S;
+                    document.getElementById('admin-score-c-trabajo').textContent = resultadosUsuario.trabajo.C;
+
+                    document.getElementById('admin-score-d-privado').textContent = resultadosUsuario.privado.D;
+                    document.getElementById('admin-score-i-privado').textContent = resultadosUsuario.privado.I;
+                    document.getElementById('admin-score-s-privado').textContent = resultadosUsuario.privado.S;
+                    document.getElementById('admin-score-c-privado').textContent = resultadosUsuario.privado.C;
+
+                    // Asegurarse de que los canvas estén limpios
+                    const trabajoCanvas = document.getElementById('admin-chart-trabajo');
+                    const privadoCanvas = document.getElementById('admin-chart-privado');
+                    if (trabajoCanvas && privadoCanvas) {
+                        const trabajoCtx = trabajoCanvas.getContext('2d');
+                        const privadoCtx = privadoCanvas.getContext('2d');
+                        
+                        trabajoCtx.clearRect(0, 0, trabajoCanvas.width, trabajoCanvas.height);
+                        privadoCtx.clearRect(0, 0, privadoCanvas.width, privadoCanvas.height);
+
+                        // Crear gráficos con los valores correctos
+                        console.log("Datos para gráfico trabajo:", resultadosUsuario.trabajo);
+                        console.log("Datos para gráfico privado:", resultadosUsuario.privado);
+                        
+                        createAdminChart('admin-chart-trabajo', resultadosUsuario.trabajo, 'Ámbito Laboral');
+                        createAdminChart('admin-chart-privado', resultadosUsuario.privado, 'Ámbito Privado');
                     }
-                    headerContainer.appendChild(detalles);
                     
                 } catch (error) {
                     console.error("Error al procesar datos locales:", error);
-                    userResultsContainer.innerHTML = `<p class="error">Error al cargar los resultados.</p>`;
+                    userResultsContainer.innerHTML = `<p class="error">Error al cargar los resultados del usuario.</p>`;
                 }
             } else {
-                userResultsContainer.innerHTML = `<p class="error">Error al cargar los resultados.</p>`;
+                userResultsContainer.innerHTML = `<p>No se encontraron resultados para ${usuario}</p>`;
             }
         });
 }
@@ -1197,9 +1275,6 @@ function loadGroup(index) {
     
     // Crear el HTML para el grupo de adjetivos
     adjectivesContainer.innerHTML = `
-        <div class="question-container">
-            <p class="question-text">Ordena los siguientes adjetivos según te describan (1 = más, 4 = menos)</p>
-        </div>
         <div class="options">
             ${generarOpcionesHTML(adjetivos, index)}
         </div>
@@ -1447,7 +1522,7 @@ function verificarCompletitud() {
         // Si todas las opciones tienen puntuación, habilitar el botón
         if (cantidadRespuestas === 4) {
             nextButton.disabled = false;
-        } else {
+    } else {
             nextButton.disabled = true;
         }
     } else {
@@ -1658,7 +1733,7 @@ function displayResults() {
     try {
         // Ocultar sección de cuestionario y mostrar resultados
         discSection.classList.add('hidden');
-        resultsSection.classList.remove('hidden');
+    resultsSection.classList.remove('hidden');
         console.log('Secciones visibilidad cambiada - quiz hidden, results visible');
         
         // Ver resultados calculados
@@ -1698,6 +1773,9 @@ function displayResults() {
                             <li><strong>S (Estabilidad):</strong> ${resultados.trabajo.S} en trabajo, ${resultados.privado.S} en privado</li>
                             <li><strong>C (Cumplimiento):</strong> ${resultados.trabajo.C} en trabajo, ${resultados.privado.C} en privado</li>
                         </ul>
+                        <p class="view-detailed-results">
+                            <a href="test_results.html?usuario=${encodeURIComponent(currentUser)}" class="view-detailed-link">Ver resultados detallados</a>
+                        </p>
                     `;
                 }
             } catch (error) {
@@ -1739,16 +1817,16 @@ function createChart(canvasId, data, title) {
                     label: title,
                     data: [data.D, data.I, data.S, data.C],
                 backgroundColor: [
-                    'rgba(255, 99, 132, 0.7)',
-                    'rgba(54, 162, 235, 0.7)',
-                    'rgba(255, 206, 86, 0.7)',
-                    'rgba(75, 192, 192, 0.7)'
+                    'rgba(231, 76, 60, 0.7)',    // D - rojo
+                    'rgba(241, 196, 15, 0.7)',   // I - amarillo (cambiado)
+                    'rgba(46, 204, 113, 0.7)',   // S - verde
+                    'rgba(52, 152, 219, 0.7)'    // C - azul (cambiado)
                 ],
                 borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)'
+                    'rgba(231, 76, 60, 1)',      // D - rojo
+                    'rgba(241, 196, 15, 1)',     // I - amarillo (cambiado)
+                    'rgba(46, 204, 113, 1)',     // S - verde
+                    'rgba(52, 152, 219, 1)'      // C - azul (cambiado)
                 ],
                 borderWidth: 1
             }]
@@ -1767,7 +1845,7 @@ function createChart(canvasId, data, title) {
             },
             plugins: {
                     title: {
-                        display: true,
+                        display: false,
                         text: title,
                         font: {
                             size: 18
@@ -1856,4 +1934,96 @@ restartButton.addEventListener('click', () => {
     
     // Limpiar campo de nombre
     document.getElementById('nombre-usuario').value = '';
-}); 
+});
+
+/**
+ * Crea un gráfico para mostrar en el panel de administrador
+ * @param {string} canvasId - ID del elemento canvas donde se dibujará el gráfico
+ * @param {Object} data - Objeto con las puntuaciones D, I, S, C
+ * @param {string} title - Título para mostrar en el gráfico
+ */
+function createAdminChart(canvasId, data, title) {
+    console.log(`Creando gráfico admin para ${canvasId} con datos:`, data);
+    
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) {
+        console.error(`Canvas con ID ${canvasId} no encontrado`);
+        return;
+    }
+    
+    const ctx = canvas.getContext('2d');
+    
+    // Asegurar que los valores son numéricos
+    const valores = {
+        D: parseInt(data.D) || 0,
+        I: parseInt(data.I) || 0,
+        S: parseInt(data.S) || 0,
+        C: parseInt(data.C) || 0
+    };
+    
+    console.log(`Valores procesados para ${canvasId}:`, valores);
+    
+    // Crear el gráfico con los mismos estilos de test_results.html
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['D', 'I', 'S', 'C'],
+            datasets: [{
+                data: [valores.D, valores.I, valores.S, valores.C],
+                backgroundColor: [
+                    'rgba(231, 76, 60, 0.7)',    // D - rojo
+                    'rgba(241, 196, 15, 0.7)',   // I - amarillo
+                    'rgba(46, 204, 113, 0.7)',   // S - verde
+                    'rgba(52, 152, 219, 0.7)'    // C - azul
+                ],
+                borderColor: [
+                    'rgba(231, 76, 60, 1)',      // D - rojo
+                    'rgba(241, 196, 15, 1)',     // I - amarillo
+                    'rgba(46, 204, 113, 1)',     // S - verde
+                    'rgba(52, 152, 219, 1)'      // C - azul
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const labels = ['Dominancia', 'Influencia', 'Estabilidad', 'Cumplimiento'];
+                            return labels[context.dataIndex] + ': ' + context.raw;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 56,
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: '#a0a0b0'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        color: '#a0a0b0'
+                    }
+                }
+            }
+        }
+    });
+} 
