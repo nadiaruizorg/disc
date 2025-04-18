@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario DISC</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div id="intro-section" class="section">
+            <h1>Cuestionario DISC</h1>
+            <p>Por favor, introduce tu nombre para comenzar.</p>
+            <div class="form-group">
+                <label for="username">Nombre completo:</label>
+                <input type="text" id="username" placeholder="Tu nombre">
+                <button id="start-btn" class="btn">Comenzar</button>
+            </div>
+        </div>
+
+        <div id="quiz-section" class="section hidden">
+            <h2>Cuestionario DISC</h2>
+            <div id="progress-bar">
+                <div id="progress"></div>
+            </div>
+            <div id="question-container">
+                <!-- Las preguntas se cargarán dinámicamente -->
+            </div>
+            <div class="navigation">
+                <button id="prev-btn" class="btn">Anterior</button>
+                <button id="next-btn" class="btn">Siguiente</button>
+            </div>
+        </div>
+
+        <div id="results-section" class="section hidden">
+            <h2>Resultados</h2>
+            <p>¡Gracias, <span id="result-name"></span>! Aquí están tus resultados DISC:</p>
+            <div class="results-container">
+                <div class="chart-container">
+                    <canvas id="results-chart"></canvas>
+                </div>
+                <div class="disc-explanation">
+                    <div class="disc-item">
+                        <h3>D - Dominance (Dominancia)</h3>
+                        <p>Orientado a resultados, enfoca en acción y decisión rápida.</p>
+                    </div>
+                    <div class="disc-item">
+                        <h3>I - Influence (Influencia)</h3>
+                        <p>Orientado a personas, comunicativo y entusiasta.</p>
+                    </div>
+                    <div class="disc-item">
+                        <h3>S - Steadiness (Estabilidad)</h3>
+                        <p>Orientado a la colaboración, paciente y confiable.</p>
+                    </div>
+                    <div class="disc-item">
+                        <h3>C - Compliance (Cumplimiento)</h3>
+                        <p>Orientado a la calidad, analítico y meticuloso.</p>
+                    </div>
+                </div>
+            </div>
+            <button id="restart-btn" class="btn">Realizar de nuevo</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
