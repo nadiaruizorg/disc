@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico de Firebase</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .card {
+            background-color: #f5f5f5;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .button.danger {
+            background-color: #f44336;
+        }
+        .button.warning {
+            background-color: #ff9800;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        #log {
+            background-color: #272822;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 4px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+        }
+    </style>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <h1>Diagnóstico de Conexión a Firebase</h1>
+    
+    <div class="card info">
+        <h2>Configuración de Firebase</h2>
+        <p>Esta herramienta verificará la conexión y permisos con Firebase Firestore.</p>
+    </div>
+    
+    <div id="firebase-status" class="card">
+        <h2>Estado de Firebase</h2>
+        <p id="firebase-status-text">Comprobando...</p>
+    </div>
+    
+    <div class="card">
+        <h2>Pruebas de Firestore</h2>
+        <button id="test-read" class="button">Probar Lectura</button>
+        <button id="test-write" class="button">Probar Escritura</button>
+        <button id="test-delete" class="button danger">Probar Eliminación</button>
+    </div>
+    
+    <div class="card">
+        <h2>Reglas de Seguridad</h2>
+        <p>Las reglas de seguridad de Firestore deben permitir acceso de lectura y escritura para que la aplicación funcione correctamente.</p>
+        <p>Reglas recomendadas para desarrollo (NO usar en producción):</p>
+        <pre>
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
+        </pre>
+        <p>Para establecer las reglas, ve a la <a href="https://console.firebase.google.com/" target="_blank">Consola de Firebase</a> → Tu proyecto → Firestore Database → Reglas</p>
+    </div>
+    
+    <div class="card">
+        <h2>Registro de Eventos</h2>
+        <div id="log"></div>
+    </div>
+    
+    <script>
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyA30RkqEJZwdSd09xCBapixsj2POgYR40Q",
+            authDomain: "disc-3dd13.firebaseapp.com",
+            projectId: "disc-3dd13",
+            storageBucket: "disc-3dd13.firebasestorage.app",
+            messagingSenderId: "916126279471",
+            appId: "1:916126279471:web:205e0addfaf4aa25e3a3da"
+        };
+        
+        // Variables
+        let firebaseInitialized = false;
+        let db = null;
+        const logElement = document.getElementById('log');
+        const firebaseStatusElement = document.getElementById('firebase-status');
+        const firebaseStatusTextElement = document.getElementById('firebase-status-text');
+        
+        // Función para registrar en la consola
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = type;
+            entry.innerHTML = `<strong>[${timestamp}]</strong> ${message}`;
+            logElement.appendChild(entry);
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(`[${timestamp}] ${message}`);
+        }
+        
+        // Inicializar Firebase
+        try {
+            log('Intentando inicializar Firebase...');
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            firebaseInitialized = true;
+            log('Firebase inicializado correctamente', 'success');
+            
+            firebaseStatusElement.className = 'card success';
+            firebaseStatusTextElement.textContent = 'Firebase está correctamente inicializado';
+        } catch (error) {
+            log(`Error al inicializar Firebase: ${error.message}`, 'error');
+            
+            firebaseStatusElement.className = 'card error';
+            firebaseStatusTextElement.textContent = `Error al inicializar Firebase: ${error.message}`;
+        }
+        
+        // Probar lectura de Firestore
+        document.getElementById('test-read').addEventListener('click', function() {
+            if (!firebaseInitialized) {
+                log('Firebase no está inicializado. No se puede probar la lectura.', 'error');
+                return;
+            }
+            
+            log('Probando acceso de lectura a Firestore...');
+            
+            db.collection('resultados_disc').get()
+                .then(querySnapshot => {
+                    log(`Lectura exitosa. Se encontraron ${querySnapshot.size} documentos.`, 'success');
+                    
+                    if (querySnapshot.size > 0) {
+                        log('Documentos encontrados:');
+                        querySnapshot.forEach(doc => {
+                            log(`- ${doc.id}`);
+                        });
+                    } else {
+                        log('No hay documentos en la colección resultados_disc', 'warning');
+                    }
+                })
+                .catch(error => {
+                    log(`Error al leer de Firestore: ${error.message}`, 'error');
+                    if (error.code === 'permission-denied') {
+                        log('Las reglas de seguridad de Firestore están bloqueando la lectura. Verifica las reglas en la consola de Firebase.', 'error');
+                    }
+                });
+        });
+        
+        // Probar escritura en Firestore
+        document.getElementById('test-write').addEventListener('click', function() {
+            if (!firebaseInitialized) {
+                log('Firebase no está inicializado. No se puede probar la escritura.', 'error');
+                return;
+            }
+            
+            log('Probando acceso de escritura a Firestore...');
+            
+            const testData = {
+                nombre: 'Test Diagnóstico',
+                fecha: new Date(),
+                mensaje: 'Este es un documento de prueba para verificar permisos de escritura',
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            db.collection('resultados_disc').doc('diagnostico_test').set(testData)
+                .then(() => {
+                    log('Escritura exitosa. Documento guardado correctamente.', 'success');
+                })
+                .catch(error => {
+                    log(`Error al escribir en Firestore: ${error.message}`, 'error');
+                    if (error.code === 'permission-denied') {
+                        log('Las reglas de seguridad de Firestore están bloqueando la escritura. Verifica las reglas en la consola de Firebase.', 'error');
+                    }
+                });
+        });
+        
+        // Probar eliminación en Firestore
+        document.getElementById('test-delete').addEventListener('click', function() {
+            if (!firebaseInitialized) {
+                log('Firebase no está inicializado. No se puede probar la eliminación.', 'error');
+                return;
+            }
+            
+            log('Probando acceso de eliminación en Firestore...');
+            
+            db.collection('resultados_disc').doc('diagnostico_test').delete()
+                .then(() => {
+                    log('Eliminación exitosa. Documento eliminado correctamente.', 'success');
+                })
+                .catch(error => {
+                    log(`Error al eliminar en Firestore: ${error.message}`, 'error');
+                    if (error.code === 'permission-denied') {
+                        log('Las reglas de seguridad de Firestore están bloqueando la eliminación. Verifica las reglas en la consola de Firebase.', 'error');
+                    }
+                });
+        });
+        
+        // Información adicional sobre la configuración
+        log(`Proyecto de Firebase: ${firebaseConfig.projectId}`);
+        log(`API Key: ${firebaseConfig.apiKey.substring(0, 10)}...`);
+    </script>
+</body>
+</html> 

@@ -3,70 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Cuestionario DISC</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css?v=1.4">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
     <div class="container">
         <div id="intro-section" class="section">
             <h1>Cuestionario DISC</h1>
-            <p>Por favor, introduce tu nombre para comenzar.</p>
-            <div class="form-group">
-                <label for="username">Nombre completo:</label>
-                <input type="text" id="username" placeholder="Tu nombre">
-                <button id="start-btn" class="btn">Comenzar</button>
+            <div class="user-input">
+                <input type="text" id="nombre-usuario" placeholder="Escribe tu nombre completo">
+                <button id="start-button" class="button">Comenzar</button>
             </div>
         </div>
 
-        <div id="quiz-section" class="section hidden">
-            <h2>Cuestionario DISC</h2>
-            <div id="progress-bar">
-                <div id="progress"></div>
+        <div id="disc-section" class="section hidden">
+            <h2 id="context-title"></h2>
+            <div id="progress-container">
+                <div id="progress-bar"></div>
             </div>
-            <div id="question-container">
-                <!-- Las preguntas se cargarán dinámicamente -->
-            </div>
-            <div class="navigation">
-                <button id="prev-btn" class="btn">Anterior</button>
-                <button id="next-btn" class="btn">Siguiente</button>
+            <div class="grupo-container">
+                <h3>Grupo <span id="group-number"></span></h3>
+                
+                <div id="adjectives-container">
+                    <!-- Los adjetivos se cargarán dinámicamente -->
+                </div>
+                
+                <div class="buttons-container">
+                    <button id="prev-button" class="button">Anterior</button>
+                    <button id="next-button" class="button">Siguiente</button>
+                </div>
             </div>
         </div>
 
         <div id="results-section" class="section hidden">
-            <h2>Resultados</h2>
-            <p>¡Gracias, <span id="result-name"></span>! Aquí están tus resultados DISC:</p>
+            <h2>Tus resultados DISC</h2>
             <div class="results-container">
-                <div class="chart-container">
-                    <canvas id="results-chart"></canvas>
+                <div class="chart-section">
+                    <h3>Ámbito Laboral</h3>
+                    <div class="chart-container">
+                        <canvas id="chart-trabajo"></canvas>
+                    </div>
                 </div>
-                <div class="disc-explanation">
-                    <div class="disc-item">
-                        <h3>D - Dominance</h3>
-                        <p>Orientado a resultados, enfoca en acción y decisión rápida.</p>
-                    </div>
-                    <div class="disc-item">
-                        <h3>I - Influence</h3>
-                        <p>Orientado a personas, comunicativo y entusiasta.</p>
-                    </div>
-                    <div class="disc-item">
-                        <h3>S - Steadiness</h3>
-                        <p>Orientado a la colaboración, paciente y confiable.</p>
-                    </div>
-                    <div class="disc-item">
-                        <h3>C - Compliance</h3>
-                        <p>Orientado a la calidad, analítico y meticuloso.</p>
+                <div class="chart-section">
+                    <h3>Ámbito Privado</h3>
+                    <div class="chart-container">
+                        <canvas id="chart-privado"></canvas>
                     </div>
                 </div>
             </div>
-            <div id="email-status" class="email-status"></div>
-            <div class="results-actions">
-                <button id="restart-btn" class="btn">Realizar de nuevo</button>
+            <div class="explanation">
+                <h3>Explicación de los resultados</h3>
+                <div id="resultados-texto"></div>
             </div>
+            <button id="restart-button" class="button">Reiniciar Cuestionario</button>
         </div>
     </div>
-    <script src="script.js"></script>
+    <script src="script.js?v=1.4"></script>
 </body>
 </html> 

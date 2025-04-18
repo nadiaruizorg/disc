@@ -14,6 +14,25 @@
     --option-background: #33334a;
     --option-hover: #3a3a53;
     --option-selected: #464670;
+    
+    /* Colores para la sección privada */
+    --privado-primary: #8b4420;
+    --privado-hover: #b45e32;
+    --privado-selected: #66462F;
+
+    /* Variables y estilos generales */
+    --color-primary: #2c3e50;
+    --color-secondary: #3498db;
+    --color-accent: #e74c3c;
+    --color-background: #ecf0f1;
+    --color-text: #333;
+    --color-light: #f8f9fa;
+    --color-border: #ddd;
+    --color-shadow: rgba(0, 0, 0, 0.1);
+    --color-d: #e74c3c;
+    --color-i: #3498db;
+    --color-s: #2ecc71;
+    --color-c: #f1c40f;
 }
 
 body {
@@ -104,6 +123,13 @@ input:focus {
     transform: translateY(0);
 }
 
+.btn:disabled {
+    background-color: #555;
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
 #progress-bar {
     width: 100%;
     height: 8px;
@@ -165,38 +191,50 @@ input:focus {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.option-label {
-    display: block;
+.option-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding: 18px 16px;
     background-color: var(--option-background);
     border-radius: 12px;
     transition: background-color 0.2s, transform 0.1s;
-    font-size: 16px;
-    font-weight: 500;
-    color: #c0c0d0;
 }
 
-.option-group:hover .option-label {
+.option-group:hover .option-content {
     background-color: var(--option-hover);
     transform: translateY(-1px);
 }
 
-.option-group:active .option-label {
+.option-group:active .option-content {
     transform: translateY(1px);
 }
 
-.option-group input[type="radio"] {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
+.option-label {
+    font-size: 16px;
+    font-weight: 500;
+    color: #c0c0d0;
+    flex: 1;
 }
 
-.option-group input[type="radio"]:checked + .option-label {
-    background-color: var(--option-selected);
-    border-left: 4px solid var(--primary-color);
-    color: #f0f0f5;
-    font-weight: 600;
+.option-ranking {
+    margin-left: 10px;
+}
+
+.ranking-select {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--card-border);
+    background-color: var(--card-background);
+    color: var(--text-color);
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.ranking-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
 }
 
 .results-container {
@@ -204,6 +242,18 @@ input:focus {
     flex-direction: column;
     gap: 30px;
     margin-top: 20px;
+}
+
+.chart-section {
+    background-color: var(--option-background);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 10px;
+}
+
+.chart-section h3 {
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 .chart-container {
@@ -232,10 +282,11 @@ input:focus {
 
 .email-status {
     text-align: center;
-    padding: 14px;
+    padding: 10px;
     margin: 15px 0;
-    border-radius: 12px;
+    border-radius: 8px;
     font-weight: 500;
+    min-height: 20px;
 }
 
 .email-status.success {
@@ -257,7 +308,18 @@ input:focus {
 }
 
 .results-actions {
+    display: flex;
+    justify-content: center;
     margin-top: 20px;
+}
+
+#email-btn {
+    background-color: var(--privado-primary);
+    color: #1e1e29;
+}
+
+#email-btn:hover {
+    background-color: var(--privado-hover);
 }
 
 /* Responsive adjustments */
@@ -279,4 +341,366 @@ input:focus {
     .disc-explanation {
         grid-template-columns: repeat(4, 1fr);
     }
+}
+
+/* Estilos para los nuevos botones de adjetivos */
+.adjetivos-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.adjetivo-btn-container {
+    width: 100%;
+}
+
+.adjetivo-btn {
+    position: relative;
+    width: 100%;
+    text-align: left;
+    padding: 15px 20px;
+    font-size: 30px;
+    border: 2px solid var(--card-border);
+    border-radius: 8px;
+    background-color: var(--option-background);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 95px; /* Altura fija para evitar cambios de tamaño */
+    box-sizing: border-box; /* Evitar que el padding modifique el tamaño */
+}
+
+.adjetivo-btn:hover {
+    background-color: var(--option-hover);
+    border-color: var(--card-border);
+}
+
+.adjetivo-btn.selected {
+    border-color: var(--primary-color);
+    background-color: var(--option-selected);
+}
+
+.numero-seleccion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px;
+    height: 60px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 35px;
+    margin-left: 15px;
+    margin-right: -7px;
+}
+
+.control-buttons {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+}
+
+#reset-selection {
+    background-color: var(--option-background);
+    border: 2px solid var(--card-border);
+    border-radius: 8px;
+    padding: 16px 32px;
+    font-size: 18px;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+#reset-selection:hover {
+    background-color: var(--option-hover);
+    border-color: var(--primary-color);
+}
+
+/* Mejoras para la navegación */
+.navigation-buttons, .navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+#prev-btn, #next-btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#prev-btn {
+    background-color: var(--option-background);
+    border: 2px solid var(--card-border);
+    color: var(--text-color);
+}
+
+#prev-btn:hover {
+    background-color: var(--option-hover);
+}
+
+#next-btn {
+    background-color: var(--primary-color);
+    border: 2px solid var(--primary-hover);
+    color: #1e1e29; /* Texto negro/oscuro */
+    font-weight: 600;
+}
+
+#next-btn:hover {
+    background-color: var(--primary-hover);
+}
+
+#next-btn:disabled {
+    background-color: #555;
+    border-color: #444;
+    color: #aaa;
+    cursor: not-allowed;
+}
+
+/* Estilos específicos para la sección privada */
+.seccion-privado .section-title {
+    color: var(--privado-primary);
+}
+
+.seccion-privado #next-btn {
+    background-color: var(--privado-primary);
+    border-color: var(--privado-hover);
+    color: #1e1e29;
+}
+
+.seccion-privado #next-btn:hover {
+    background-color: var(--privado-hover);
+}
+
+.seccion-privado .numero-seleccion {
+    background-color: var(--privado-primary);
+}
+
+.seccion-privado .adjetivo-btn.selected {
+    border-color: var(--privado-primary);
+    background-color: var(--privado-selected);
+}
+
+.seccion-privado #reset-selection:hover {
+    background-color: var(--option-hover);
+    border-color: var(--privado-primary);
+    color: var(--privado-primary);
+}
+
+.seccion-privado #prev-btn:hover {
+    background-color: var(--option-hover);
+    border-color: var(--privado-primary);
+}
+
+#section-title {
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+    text-align: center;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.seccion-privado .adjetivo-btn:hover {
+    background-color: rgba(255, 153, 102, 0.15);
+    border-color: rgba(255, 153, 102, 0.2);
+}
+
+.seccion-privado .progress-bar #progress {
+    background-color: var(--privado-primary);
+}
+
+.seccion-privado h3 {
+    color: var(--privado-primary);
+}
+
+/* Estilos para la sección de administración */
+#admin-section {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: var(--card-background);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    border: 1px solid var(--card-border);
+}
+
+#admin-section h2 {
+    color: #f0f0f5;
+    margin-bottom: 20px;
+}
+
+.users-list {
+    margin: 20px 0;
+    padding: 0;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.admin-users-list, ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.admin-user-item, .user-item {
+    padding: 12px 15px;
+    margin: 8px 0;
+    background-color: var(--option-background);
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-color);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+    color: var(--text-color);
+}
+
+.admin-user-item:hover, .user-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    background-color: var(--option-hover);
+    border-left: 4px solid var(--primary-hover);
+}
+
+.no-users, .error {
+    color: var(--text-color);
+    font-style: italic;
+    padding: 20px;
+    background-color: var(--option-background);
+    border-radius: 8px;
+    border: 1px solid var(--card-border);
+}
+
+.error {
+    color: #ff6b6b;
+    border-color: #ff6b6b;
+}
+
+.user-results, #user-results-container {
+    padding: 20px;
+    background-color: var(--card-background);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    margin: 20px 0;
+    color: var(--text-color);
+    border: 1px solid var(--card-border);
+}
+
+.user-results h3, #selected-user-name {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--card-border);
+    padding-bottom: 10px;
+}
+
+.user-details {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: var(--option-background);
+    border-radius: 8px;
+    border: 1px solid var(--card-border);
+    text-align: left;
+}
+
+#back-to-users-btn, #back-to-list-btn {
+    margin-top: 15px;
+    background-color: var(--option-background);
+    color: var(--text-color);
+    border: 1px solid var(--card-border);
+}
+
+#back-to-users-btn:hover, #back-to-list-btn:hover {
+    background-color: var(--option-hover);
+}
+
+#logout-btn, #admin-logout-btn {
+    margin-top: 20px;
+    background-color: var(--privado-primary);
+    color: white;
+}
+
+#logout-btn:hover, #admin-logout-btn:hover {
+    background-color: var(--privado-hover);
+}
+
+/* Estilo para botones con la clase 'button' */
+.button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 16px 24px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-top: 15px;
+    width: 100%;
+    max-width: 300px;
+    display: block;
+}
+
+.button:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+.button:active {
+    transform: translateY(0);
+}
+
+.button:disabled {
+    background-color: #555;
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Estilos específicos para la pantalla de introducción */
+.user-input {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.user-input .button {
+    margin-top: 20px;
+    align-self: center;
+}
+
+/* Estilos para los botones de navegación */
+.buttons-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+    gap: 15px;
+}
+
+.buttons-container .button {
+    flex: 1;
+    margin-top: 0;
+}
+
+#context-title {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
 } 

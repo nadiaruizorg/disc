@@ -1,87 +1,3 @@
-// Datos del cuestionario DISC basados en el archivo Excel
-const discQuestions = [
-    {
-        question: "Me gusta tomar decisiones rápidas y asumir riesgos",
-        type: "D"
-    },
-    {
-        question: "Soy una persona optimista y entusiasta",
-        type: "I"
-    },
-    {
-        question: "Prefiero ambientes estables y predecibles",
-        type: "S"
-    },
-    {
-        question: "Tiendo a ser perfeccionista y analítico",
-        type: "C"
-    },
-    {
-        question: "Me gusta estar a cargo y dirigir a otros",
-        type: "D"
-    },
-    {
-        question: "Disfruto conociendo gente nueva y socializando",
-        type: "I"
-    },
-    {
-        question: "Soy una persona paciente y considerada",
-        type: "S"
-    },
-    {
-        question: "Presto mucha atención a los detalles y reglas",
-        type: "C"
-    },
-    {
-        question: "Me oriento más hacia resultados que hacia personas",
-        type: "D"
-    },
-    {
-        question: "Tiendo a expresar mis emociones abiertamente",
-        type: "I"
-    },
-    {
-        question: "Prefiero la cooperación al conflicto",
-        type: "S"
-    },
-    {
-        question: "Me gusta planificar antes de actuar",
-        type: "C"
-    },
-    {
-        question: "Suelo tomar la iniciativa en situaciones nuevas",
-        type: "D"
-    },
-    {
-        question: "Me motiva el reconocimiento y la aprobación",
-        type: "I"
-    },
-    {
-        question: "Soy leal y prefiero relaciones duraderas",
-        type: "S"
-    },
-    {
-        question: "Busco la precisión y exactitud en mi trabajo",
-        type: "C"
-    },
-    {
-        question: "Me gusta resolver problemas y superar obstáculos",
-        type: "D"
-    },
-    {
-        question: "Soy persuasivo y convenzo fácilmente a otros",
-        type: "I"
-    },
-    {
-        question: "Prefiero trabajar a un ritmo constante y metódico",
-        type: "S"
-    },
-    {
-        question: "Tiendo a ser cauteloso antes de tomar decisiones",
-        type: "C"
-    }
-];
-
 // Configuración EmailJS
 (function() {
     // IMPORTANTE: Antes de usar, debes:
@@ -91,209 +7,1748 @@ const discQuestions = [
     // 4. Reemplazar 'REEMPLAZAR_CON_TU_PUBLIC_KEY' con tu clave pública
     // 5. Reemplazar 'default_service' con el ID de tu servicio
     // 6. Reemplazar 'template_id' con el ID de tu plantilla
-    emailjs.init("REEMPLAZAR_CON_TU_PUBLIC_KEY");
+    
+    // Comentado para evitar errores - Descomenta y configura cuando tengas tus credenciales
+    // emailjs.init("REEMPLAZAR_CON_TU_PUBLIC_KEY");
 })();
 
-// Variables globales
-let currentQuestionIndex = 0;
-let answers = {
+// Limpiar el sessionStorage al iniciar la aplicación para evitar respuestas guardadas
+(function() {
+    // Buscar todas las claves que comienzan con "trabajo_" o "privado_" para eliminarlas
+    for (let i = 0; i < sessionStorage.length; i++) {
+        const key = sessionStorage.key(i);
+        if (key && (key.startsWith('trabajo_') || key.startsWith('privado_'))) {
+            sessionStorage.removeItem(key);
+            i--; // Ajustar el índice ya que se eliminó un elemento
+        }
+    }
+    console.log('SessionStorage limpiado al iniciar la aplicación');
+})();
+
+// Configuración de Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyA30RkqEJZwdSd09xCBapixsj2POgYR40Q",
+    authDomain: "disc-3dd13.firebaseapp.com",
+    projectId: "disc-3dd13",
+    storageBucket: "disc-3dd13.firebasestorage.app",
+    messagingSenderId: "916126279471",
+    appId: "1:916126279471:web:205e0addfaf4aa25e3a3da"
+};
+
+// Variables para Firebase
+let firebaseInitialized = false;
+let db = null;
+
+// Intentar inicializar Firebase
+try {
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.firestore();
+  console.log("Firebase inicializado correctamente");
+  firebaseInitialized = true;
+} catch (error) {
+  console.error("Error al inicializar Firebase:", error);
+  console.log("La aplicación funcionará en modo local sin conexión a Firebase");
+}
+
+// Datos del cuestionario DISC (antes estaban en disc_data.json)
+const discData = {
+  "grupos": [
+    {
+      "id": 0,
+      "trabajo": [
+        {
+          "adjetivo": "Entusiasta",
+          "puntuacion": 1.0,
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Atrevido",
+          "puntuacion": 2.0,
+          "tipo": "I"
+        },
+        {
+          "adjetivo": "Concienzudo",
+          "puntuacion": 4.0,
+          "tipo": "S"
+        },
+        {
+          "adjetivo": "Amigable",
+          "puntuacion": 3.0,
+          "tipo": "C"
+        }
+      ],
+      "privado": [
+        {
+          "adjetivo": "Entusiasta",
+          "puntuacion": 1.0,
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Atrevido",
+          "puntuacion": 3.0,
+          "tipo": "I"
+        },
+        {
+          "adjetivo": "Concienzudo",
+          "puntuacion": 4.0,
+          "tipo": "S"
+        },
+        {
+          "adjetivo": "Amigable",
+          "puntuacion": 2.0,
+          "tipo": "C"
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "trabajo": [
+        {
+          "adjetivo": "Lógico",
+          "puntuacion": 4.0,
+          "tipo": "S"
+        },
+        {
+          "adjetivo": "Atractivo",
+          "puntuacion": 1.0,
+          "tipo": "I"
+        },
+        {
+          "adjetivo": "Amable",
+          "puntuacion": 2.0,
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Franco",
+          "puntuacion": 3.0,
+          "tipo": "C"
+        }
+      ],
+      "privado": [
+        {
+          "adjetivo": "Lógico",
+          "puntuacion": 4.0,
+          "tipo": "S"
+        },
+        {
+          "adjetivo": "Atractivo",
+          "puntuacion": 3.0,
+          "tipo": "I"
+        },
+        {
+          "adjetivo": "Amable",
+          "puntuacion": 2.0,
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Franco",
+          "puntuacion": 1.0,
+          "tipo": "C"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "trabajo": [
+        {
+          "adjetivo": "Conciliador",
+          "puntuacion": 2.0,
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Extrovertido",
+          "puntuacion": 1.0,
+          "tipo": "C"
+        },
+        {
+          "adjetivo": "Osado",
+          "puntuacion": 3.0,
+          "tipo": "S"
+        },
+        {
+          "adjetivo": "Cuidadoso",
+          "puntuacion": 4.0,
+          "tipo": "I"
+        }
+      ],
+      "privado": [
+        {
+          "adjetivo": "Conciliador",
+          "puntuacion": 1.0,
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Extrovertido",
+          "puntuacion": 2.0,
+          "tipo": "C"
+        },
+        {
+          "adjetivo": "Osado",
+          "puntuacion": 3.0,
+          "tipo": "S"
+        },
+        {
+          "adjetivo": "Cuidadoso",
+          "puntuacion": 4.0,
+          "tipo": "I"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "trabajo": [
+        {
+          "adjetivo": "Persistente",
+          "puntuacion": 1.0,
+          "tipo": "C"
+        },
+        {
+          "adjetivo": "Discreto",
+          "puntuacion": 4.0,
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Comprensivo",
+          "puntuacion": 3.0,
+          "tipo": "I"
+        },
+        {
+          "adjetivo": "Encantador",
+          "puntuacion": 2.0,
+          "tipo": "S"
+        }
+      ],
+      "privado": [
+        {
+          "adjetivo": "Persistente",
+          "puntuacion": 1.0,
+          "tipo": "C"
+        },
+        {
+          "adjetivo": "Discreto",
+          "puntuacion": 4.0,
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Comprensivo",
+          "puntuacion": 2.0,
+          "tipo": "I"
+        },
+        {
+          "adjetivo": "Encantador",
+          "puntuacion": 3.0,
+          "tipo": "S"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "trabajo": [
+        {
+          "adjetivo": "Controlado",
+          "puntuacion": 4.0,
+          "tipo": "S"
+        },
+        {
+          "adjetivo": "Disciplinado",
+          "puntuacion": 2.0,
+          "tipo": "I"
+        },
+        {
+          "adjetivo": "Hablador",
+          "puntuacion": 3.0,
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Emprendedor",
+          "puntuacion": 1.0,
+          "tipo": "C"
+        }
+      ],
+      "privado": [
+        {
+          "adjetivo": "Controlado",
+          "puntuacion": 4.0,
+          "tipo": "S"
+        },
+        {
+          "adjetivo": "Disciplinado",
+          "puntuacion": 2.0,
+          "tipo": "I"
+        },
+        {
+          "adjetivo": "Hablador",
+          "puntuacion": 3.0,
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Emprendedor",
+          "puntuacion": 1.0,
+          "tipo": "C"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "trabajo": [
+        {
+          "adjetivo": "Me cuesta decir que \"NO\"",
+          "puntuacion": 4.0,
+          "tipo": "S"
+        },
+        {
+          "adjetivo": "Alma de la fiesta",
+          "puntuacion": 3.0,
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Seguro de sí mismo",
+          "puntuacion": 1.0,
+          "tipo": "I"
+        },
+        {
+          "adjetivo": "Cumplidor",
+          "puntuacion": 2.0,
+          "tipo": "C"
+        }
+      ],
+      "privado": [
+        {
+          "adjetivo": "Me cuesta decir que \"NO\"",
+          "puntuacion": 4.0,
+          "tipo": "S"
+        },
+        {
+          "adjetivo": "Alma de la fiesta",
+          "puntuacion": 3.0,
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Seguro de sí mismo",
+          "puntuacion": 1.0,
+          "tipo": "I"
+        },
+        {
+          "adjetivo": "Cumplidor",
+          "puntuacion": 2.0,
+          "tipo": "C"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "trabajo": [
+        {
+          "adjetivo": "Respestuoso",
+          "puntuacion": 3.0,
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Obstinado",
+          "puntuacion": 4.0,
+          "tipo": "S"
+        },
+        {
+          "adjetivo": "Comunicador",
+          "puntuacion": 1.0,
+          "tipo": "I"
+        },
+        {
+          "adjetivo": "Organizado",
+          "puntuacion": 2.0,
+          "tipo": "C"
+        }
+      ],
+      "privado": [
+        {
+          "adjetivo": "Respestuoso",
+          "puntuacion": 3.0,
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Obstinado",
+          "puntuacion": 4.0,
+          "tipo": "S"
+        },
+        {
+          "adjetivo": "Comunicador",
+          "puntuacion": 1.0,
+          "tipo": "I"
+        },
+        {
+          "adjetivo": "Organizado",
+          "puntuacion": 2.0,
+          "tipo": "C"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "trabajo": [
+        {
+          "adjetivo": "Competitivo",
+          "puntuacion": 2.0,
+          "tipo": "I"
+        },
+        {
+          "adjetivo": "Estable",
+          "puntuacion": 1.0,
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Don de gentes",
+          "puntuacion": 3.0,
+          "tipo": "C"
+        },
+        {
+          "adjetivo": "Minucioso",
+          "puntuacion": 4.0,
+          "tipo": "S"
+        }
+      ],
+      "privado": [
+        {
+          "adjetivo": "Competitivo",
+          "puntuacion": 3.0,
+          "tipo": "I"
+        },
+        {
+          "adjetivo": "Estable",
+          "puntuacion": 1.0,
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Don de gentes",
+          "puntuacion": 2.0,
+          "tipo": "C"
+        },
+        {
+          "adjetivo": "Minucioso",
+          "puntuacion": 4.0,
+          "tipo": "S"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "trabajo": [
+        {
+          "adjetivo": "Sociable",
+          "puntuacion": 2.0,
+          "tipo": "C"
+        },
+        {
+          "adjetivo": "Dominante",
+          "puntuacion": 1.0,
+          "tipo": "I"
+        },
+        {
+          "adjetivo": "Reflexivo",
+          "puntuacion": 4.0,
+          "tipo": "S"
+        },
+        {
+          "adjetivo": "Adaptable",
+          "puntuacion": 3.0,
+          "tipo": "D"
+        }
+      ],
+      "privado": [
+        {
+          "adjetivo": "Sociable",
+          "puntuacion": 4.0,
+          "tipo": "C"
+        },
+        {
+          "adjetivo": "Dominante",
+          "puntuacion": 1.0,
+          "tipo": "I"
+        },
+        {
+          "adjetivo": "Reflexivo",
+          "puntuacion": 3.0,
+          "tipo": "S"
+        },
+        {
+          "adjetivo": "Adaptable",
+          "puntuacion": 2.0,
+          "tipo": "D"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "trabajo": [
+        {
+          "adjetivo": "Reservado",
+          "puntuacion": 4.0,
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Persuasivo",
+          "puntuacion": 1.0,
+          "tipo": "S"
+        },
+        {
+          "adjetivo": "Atento",
+          "puntuacion": 3.0,
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Directo",
+          "puntuacion": 2.0,
+          "tipo": "C"
+        }
+      ],
+      "privado": [
+        {
+          "adjetivo": "Reservado",
+          "puntuacion": 4.0,
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Persuasivo",
+          "puntuacion": 2.0,
+          "tipo": "S"
+        },
+        {
+          "adjetivo": "Atento",
+          "puntuacion": 3.0,
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Directo",
+          "puntuacion": 1.0,
+          "tipo": "C"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "trabajo": [
+        {
+          "adjetivo": "Enérgico",
+          "puntuacion": 1.0,
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Tolerante",
+          "puntuacion": 3.0,
+          "tipo": "I"
+        },
+        {
+          "adjetivo": "Decidido",
+          "puntuacion": 2.0,
+          "tipo": "C"
+        },
+        {
+          "adjetivo": "Preciso",
+          "puntuacion": 4.0,
+          "tipo": "S"
+        }
+      ],
+      "privado": [
+        {
+          "adjetivo": "Enérgico",
+          "puntuacion": 1.0,
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Tolerante",
+          "puntuacion": 3.0,
+          "tipo": "I"
+        },
+        {
+          "adjetivo": "Decidido",
+          "puntuacion": 2.0,
+          "tipo": "C"
+        },
+        {
+          "adjetivo": "Preciso",
+          "puntuacion": 4.0,
+          "tipo": "S"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "trabajo": [
+        {
+          "adjetivo": "Exigente",
+          "puntuacion": 1.0,
+          "tipo": "I"
+        },
+        {
+          "adjetivo": "Expresivo",
+          "puntuacion": 4.0,
+          "tipo": "S"
+        },
+        {
+          "adjetivo": "Perfeccionista",
+          "puntuacion": 2.0,
+          "tipo": "C"
+        },
+        {
+          "adjetivo": "Considerado",
+          "puntuacion": 3.0,
+          "tipo": "D"
+        }
+      ],
+      "privado": [
+        {
+          "adjetivo": "Exigente",
+          "puntuacion": 1.0,
+          "tipo": "I"
+        },
+        {
+          "adjetivo": "Expresivo",
+          "puntuacion": 2.0,
+          "tipo": "S"
+        },
+        {
+          "adjetivo": "Perfeccionista",
+          "puntuacion": 4.0,
+          "tipo": "C"
+        },
+        {
+          "adjetivo": "Considerado",
+          "puntuacion": 3.0,
+          "tipo": "D"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "trabajo": [
+        {
+          "adjetivo": "Efusivo",
+          "puntuacion": 2.0,
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Complaciente",
+          "puntuacion": 4.0,
+          "tipo": "S"
+        },
+        {
+          "adjetivo": "Receptivo",
+          "puntuacion": 3.0,
+          "tipo": "C"
+        },
+        {
+          "adjetivo": "Innovador",
+          "puntuacion": 1.0,
+          "tipo": "I"
+        }
+      ],
+      "privado": [
+        {
+          "adjetivo": "Efusivo",
+          "puntuacion": 1.0,
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Complaciente",
+          "puntuacion": 3.0,
+          "tipo": "S"
+        },
+        {
+          "adjetivo": "Receptivo",
+          "puntuacion": 2.0,
+          "tipo": "C"
+        },
+        {
+          "adjetivo": "Innovador",
+          "puntuacion": 4.0,
+          "tipo": "I"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "trabajo": [
+        {
+          "adjetivo": "Asumo retos",
+          "puntuacion": 1.0,
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Paciente",
+          "puntuacion": 4.0,
+          "tipo": "S"
+        },
+        {
+          "adjetivo": "Instruido",
+          "puntuacion": 2.0,
+          "tipo": "C"
+        },
+        {
+          "adjetivo": "Efusivo",
+          "puntuacion": 3.0,
+          "tipo": "I"
+        }
+      ],
+      "privado": [
+        {
+          "adjetivo": "Asumo retos",
+          "puntuacion": 3.0,
+          "tipo": "D"
+        },
+        {
+          "adjetivo": "Paciente",
+          "puntuacion": 4.0,
+          "tipo": "S"
+        },
+        {
+          "adjetivo": "Instruido",
+          "puntuacion": 2.0,
+          "tipo": "C"
+        },
+        {
+          "adjetivo": "Efusivo",
+          "puntuacion": 1.0,
+          "tipo": "I"
+        }
+      ]
+    }
+  ],
+  "instrucciones": {
+    "titulo": "Cuestionario DISC",
+    "descripcion": "En cada grupo de 4 adjetivos, puntúa del 1 al 4 según te identifiques con ellos, donde 1 es el más representativo y 4 el menos.",
+    "trabajo": "Contesta pensando en cómo te comportas en tu ámbito laboral",
+    "privado": "Contesta pensando en cómo te comportas en tu ámbito privado"
+  }
+};
+
+// Variables para el cuestionario
+let currentGroupIndex = 0;
+let currentSection = 'trabajo'; // 'trabajo' o 'privado'
+let currentUser = ''; // Variable para almacenar el nombre del usuario actual
+
+// Variables globales para resultados
+let resultados = {
+    trabajo: {
     D: 0,
     I: 0,
     S: 0,
     C: 0
-};
-let userName = '';
-let emailSent = false;
-
-// Elementos del DOM
-const introSection = document.getElementById('intro-section');
-const quizSection = document.getElementById('quiz-section');
-const resultsSection = document.getElementById('results-section');
-const startBtn = document.getElementById('start-btn');
-const prevBtn = document.getElementById('prev-btn');
-const nextBtn = document.getElementById('next-btn');
-const questionContainer = document.getElementById('question-container');
-const progressBar = document.getElementById('progress');
-const resultName = document.getElementById('result-name');
-const restartBtn = document.getElementById('restart-btn');
-const emailStatus = document.getElementById('email-status');
-
-// Iniciar el cuestionario
-startBtn.addEventListener('click', () => {
-    userName = document.getElementById('username').value.trim();
-    if (!userName) {
-        alert('Por favor, introduce tu nombre para continuar.');
-        return;
-    }
-    
-    introSection.classList.add('hidden');
-    quizSection.classList.remove('hidden');
-    loadQuestion(currentQuestionIndex);
-});
-
-// Cargar pregunta actual
-function loadQuestion(index) {
-    const question = discQuestions[index];
-    
-    // Actualizar la barra de progreso
-    const progress = ((index + 1) / discQuestions.length) * 100;
-    progressBar.style.width = `${progress}%`;
-    
-    // Crear el HTML para la pregunta
-    questionContainer.innerHTML = `
-        <div class="question-container">
-            <h3>Pregunta ${index + 1} de ${discQuestions.length}</h3>
-            <p class="question-text">${question.question}</p>
-        </div>
-        <div class="options">
-            <div class="option-group">
-                <input type="radio" id="option1" name="answer" value="5" ${getUserAnswer(index) === 5 ? 'checked' : ''}>
-                <label for="option1" class="option-label">Totalmente de acuerdo</label>
-            </div>
-            <div class="option-group">
-                <input type="radio" id="option2" name="answer" value="4" ${getUserAnswer(index) === 4 ? 'checked' : ''}>
-                <label for="option2" class="option-label">De acuerdo</label>
-            </div>
-            <div class="option-group">
-                <input type="radio" id="option3" name="answer" value="3" ${getUserAnswer(index) === 3 ? 'checked' : ''}>
-                <label for="option3" class="option-label">Neutral</label>
-            </div>
-            <div class="option-group">
-                <input type="radio" id="option4" name="answer" value="2" ${getUserAnswer(index) === 2 ? 'checked' : ''}>
-                <label for="option4" class="option-label">En desacuerdo</label>
-            </div>
-            <div class="option-group">
-                <input type="radio" id="option5" name="answer" value="1" ${getUserAnswer(index) === 1 ? 'checked' : ''}>
-                <label for="option5" class="option-label">Totalmente en desacuerdo</label>
-            </div>
-        </div>
-    `;
-    
-    // Añadir evento click a las opciones para avanzar automáticamente
-    const optionGroups = document.querySelectorAll('.option-group');
-    optionGroups.forEach(group => {
-        group.addEventListener('click', () => {
-            const radio = group.querySelector('input[type="radio"]');
-            if (radio) {
-                radio.checked = true;
-                
-                // Mostrar la selección visualmente
-                optionGroups.forEach(g => g.classList.remove('selected'));
-                group.classList.add('selected');
-                
-                // Pequeña pausa para mostrar la selección antes de avanzar
-                setTimeout(() => {
-                    if (currentQuestionIndex < discQuestions.length - 1) {
-                        if (saveAnswer()) {
-                            currentQuestionIndex++;
-                            loadQuestion(currentQuestionIndex);
-                        }
-                    } else if (saveAnswer()) {
-                        calculateResults();
-                        showResults();
-                    }
-                }, 300);
-            }
-        });
-    });
-    
-    // Actualizar visibilidad de los botones
-    prevBtn.style.visibility = index === 0 ? 'hidden' : 'visible';
-    nextBtn.textContent = index === discQuestions.length - 1 ? 'Ver resultados' : 'Siguiente';
-}
-
-// Obtener respuesta del usuario para una pregunta específica
-function getUserAnswer(questionIndex) {
-    const value = sessionStorage.getItem(`question_${questionIndex}`);
-    return value ? parseInt(value) : null;
-}
-
-// Guardar respuesta actual
-function saveAnswer() {
-    const selectedOption = document.querySelector('input[name="answer"]:checked');
-    if (!selectedOption) return false;
-    
-    const value = parseInt(selectedOption.value);
-    const questionType = discQuestions[currentQuestionIndex].type;
-    
-    // Guardar en sessionStorage para recordar las respuestas al navegar
-    sessionStorage.setItem(`question_${currentQuestionIndex}`, value);
-    
-    return true;
-}
-
-// Eventos de navegación
-prevBtn.addEventListener('click', () => {
-    saveAnswer();
-    currentQuestionIndex--;
-    loadQuestion(currentQuestionIndex);
-});
-
-nextBtn.addEventListener('click', () => {
-    if (!saveAnswer()) {
-        alert('Por favor, selecciona una respuesta para continuar.');
-        return;
-    }
-    
-    if (currentQuestionIndex < discQuestions.length - 1) {
-        currentQuestionIndex++;
-        loadQuestion(currentQuestionIndex);
-    } else {
-        calculateResults();
-        showResults();
-    }
-});
-
-// Calcular resultados
-function calculateResults() {
-    // Reiniciar resultados
-    answers = {
+    },
+    privado: {
         D: 0,
         I: 0,
         S: 0,
         C: 0
-    };
-    
-    // Sumar todas las respuestas por tipo
-    for (let i = 0; i < discQuestions.length; i++) {
-        const value = parseInt(sessionStorage.getItem(`question_${i}`)) || 0;
-        const type = discQuestions[i].type;
-        answers[type] += value;
+    }
+};
+
+// Elementos del DOM
+const introSection = document.getElementById('intro-section');
+const discSection = document.getElementById('disc-section');
+const resultsSection = document.getElementById('results-section');
+const startButton = document.getElementById('start-button');
+const prevButton = document.getElementById('prev-button');
+const nextButton = document.getElementById('next-button');
+const adjectivesContainer = document.getElementById('adjectives-container');
+const progressBar = document.getElementById('progress-bar');
+const restartButton = document.getElementById('restart-button');
+const contextTitle = document.getElementById('context-title');
+const groupNumber = document.getElementById('group-number');
+
+// Evento para el botón de inicio
+startButton.addEventListener('click', () => {
+    const nombreUsuario = document.getElementById('nombre-usuario').value.trim();
+    if (!nombreUsuario) {
+        alert('Por favor, ingresa tu nombre para continuar.');
+        return;
     }
     
-    // Normalizar resultados (convertir a porcentajes)
-    const total = Object.values(answers).reduce((sum, val) => sum + val, 0);
-    for (let type in answers) {
-        answers[type] = Math.round((answers[type] / total) * 100);
+    currentUser = nombreUsuario;
+    
+    // Limpiar cualquier respuesta previa
+    inicializarRespuestas();
+    
+    // Verificar si es el administrador
+    if (nombreUsuario.toLowerCase() === "nadia ruiz") {
+        mostrarPanelAdmin();
+    } else {
+        // Usuario normal, iniciar cuestionario
+        introSection.classList.add('hidden');
+        discSection.classList.remove('hidden');
+        contextTitle.textContent = discData.instrucciones.trabajo;
+        loadQuestion();
+    }
+});
+
+// Función para mostrar el panel de administrador
+function mostrarPanelAdmin() {
+    // Ocultar todas las secciones visibles
+    introSection.classList.add('hidden');
+    discSection.classList.add('hidden');
+    resultsSection.classList.add('hidden');
+    
+    // Verificar si ya existe el panel de administrador
+    let adminSection = document.getElementById('admin-section');
+    
+    if (!adminSection) {
+        // Crear la sección de administrador
+        adminSection = document.createElement('div');
+        adminSection.id = 'admin-section';
+        adminSection.className = 'section';
+        adminSection.innerHTML = `
+            <h2>Panel de Administración</h2>
+            <p>Bienvenida, Nadia. Aquí puedes ver los resultados de todos los usuarios.</p>
+            
+            <div class="admin-content">
+                <div id="users-list-container">
+                    <h3>Usuarios que han completado el cuestionario:</h3>
+                    <div id="users-list" class="users-list"></div>
+            </div>
+                
+                <div id="user-results-container" class="hidden">
+                    <div class="user-results-header">
+                        <h3 id="selected-user-name"></h3>
+                        <button id="back-to-users-btn" class="button">Volver a la lista</button>
+            </div>
+                    <div class="results-charts">
+                        <div class="chart-container">
+                            <h4>Ámbito Laboral</h4>
+                            <canvas id="admin-chart-trabajo"></canvas>
+            </div>
+                        <div class="chart-container">
+                            <h4>Ámbito Privado</h4>
+                            <canvas id="admin-chart-privado"></canvas>
+            </div>
+            </div>
+        </div>
+            </div>
+            
+            <button id="logout-btn" class="button">Cerrar sesión</button>
+        `;
+        
+        document.body.appendChild(adminSection);
+        
+        // Agregar eventos a los botones
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            adminSection.classList.add('hidden');
+            introSection.classList.remove('hidden');
+            document.getElementById('nombre-usuario').value = '';
+        });
+        
+        document.getElementById('back-to-users-btn').addEventListener('click', () => {
+            document.getElementById('user-results-container').classList.add('hidden');
+            document.getElementById('users-list-container').classList.remove('hidden');
+        });
+    } else {
+        // Si ya existe, simplemente mostrarlo
+        adminSection.classList.remove('hidden');
+    }
+    
+    // Cargar la lista de usuarios
+    cargarListaUsuarios();
+}
+
+// Función para cargar la lista de usuarios
+function cargarListaUsuarios() {
+    const usersListContainer = document.getElementById('users-list');
+    usersListContainer.innerHTML = '<p>Cargando usuarios...</p>';
+    
+    // Verificar si Firebase está disponible
+    if (!firebaseInitialized || !db) {
+        console.log("Firebase no está disponible, intentando cargar datos de localStorage");
+        
+        // Buscar usuarios en localStorage como respaldo
+        const usuarios = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('resultados_')) {
+                const nombreUsuario = key.replace('resultados_', '');
+                usuarios.push(nombreUsuario);
+            }
+        }
+        
+        // Mostrar mensaje si no hay usuarios
+        if (usuarios.length === 0) {
+            usersListContainer.innerHTML = '<p class="no-users">No hay usuarios que hayan completado el cuestionario.</p>';
+            return;
+        }
+        
+        // Crear la lista de usuarios
+        const ul = document.createElement('ul');
+        
+        usuarios.forEach(usuario => {
+            const li = document.createElement('li');
+            li.className = 'user-item';
+            li.textContent = usuario;
+            li.addEventListener('click', () => mostrarResultadosUsuario(usuario));
+            ul.appendChild(li);
+        });
+        
+        usersListContainer.innerHTML = '';
+        usersListContainer.appendChild(ul);
+        return;
+    }
+    
+    // Si Firebase está disponible, obtener usuarios desde Firestore
+    db.collection("resultados_disc").get()
+        .then((querySnapshot) => {
+            const usuarios = [];
+            
+            querySnapshot.forEach((doc) => {
+                usuarios.push(doc.id); // doc.id contiene el nombre del usuario
+            });
+            
+            // Mostrar mensaje si no hay usuarios
+            if (usuarios.length === 0) {
+                usersListContainer.innerHTML = '<p class="no-users">No hay usuarios que hayan completado el cuestionario.</p>';
+                return;
+            }
+            
+            // Crear la lista de usuarios
+            const ul = document.createElement('ul');
+            
+            usuarios.forEach(usuario => {
+                const li = document.createElement('li');
+                li.className = 'user-item';
+                li.textContent = usuario;
+                li.addEventListener('click', () => mostrarResultadosUsuario(usuario));
+                ul.appendChild(li);
+            });
+            
+            usersListContainer.innerHTML = '';
+            usersListContainer.appendChild(ul);
+        })
+        .catch((error) => {
+            console.error("Error al cargar usuarios desde Firebase:", error);
+            usersListContainer.innerHTML = '<p class="error">Error al cargar la lista de usuarios.</p>';
+            
+            // Intentar cargar desde localStorage como respaldo
+            console.log("Intentando cargar desde localStorage después del error de Firebase");
+            const usuarios = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('resultados_')) {
+                    const nombreUsuario = key.replace('resultados_', '');
+                    usuarios.push(nombreUsuario);
+                }
+            }
+            
+            if (usuarios.length > 0) {
+                const ul = document.createElement('ul');
+                
+                usuarios.forEach(usuario => {
+                    const li = document.createElement('li');
+                    li.className = 'user-item';
+                    li.textContent = usuario;
+                    li.addEventListener('click', () => mostrarResultadosUsuario(usuario));
+                    ul.appendChild(li);
+                });
+                
+                usersListContainer.innerHTML = '';
+                usersListContainer.appendChild(ul);
+            }
+        });
+}
+
+// Función para mostrar los resultados de un usuario específico
+function mostrarResultadosUsuario(usuario) {
+    // Obtener los contenedores
+    const usersListContainer = document.getElementById('users-list-container');
+    const userResultsContainer = document.getElementById('user-results-container');
+    
+    // Ocultar lista y mostrar resultados
+    usersListContainer.classList.add('hidden');
+    userResultsContainer.classList.remove('hidden');
+    
+    // Mostrar el nombre del usuario seleccionado
+    document.getElementById('selected-user-name').textContent = `Resultados de ${usuario}`;
+    
+    // Verificar si Firebase está disponible
+    if (!firebaseInitialized || !db) {
+        console.log("Firebase no está disponible, intentando cargar resultados desde localStorage");
+        
+        // Buscar resultados en localStorage como respaldo
+        const datosGuardados = localStorage.getItem(`resultados_${usuario}`);
+        
+        if (datosGuardados) {
+            try {
+                const datosUsuario = JSON.parse(datosGuardados);
+                const resultadosUsuario = datosUsuario.resultados;
+                
+                // Limpiar canvas previos si existen
+                const trabajoCanvas = document.getElementById('admin-chart-trabajo');
+                const privadoCanvas = document.getElementById('admin-chart-privado');
+                
+                // Asegurarse de que los canvas estén limpios
+                const trabajoCtx = trabajoCanvas.getContext('2d');
+                const privadoCtx = privadoCanvas.getContext('2d');
+                
+                trabajoCtx.clearRect(0, 0, trabajoCanvas.width, trabajoCanvas.height);
+                privadoCtx.clearRect(0, 0, privadoCanvas.width, privadoCanvas.height);
+                
+                // Crear gráficos
+                createChart('admin-chart-trabajo', resultadosUsuario.trabajo, 'Ámbito Laboral');
+                createChart('admin-chart-privado', resultadosUsuario.privado, 'Ámbito Privado');
+                
+                // Mostrar fecha del test
+                const fechaTest = new Date(datosUsuario.fecha || new Date());
+                const fechaFormateada = fechaTest.toLocaleDateString() + ' ' + fechaTest.toLocaleTimeString();
+                
+                // Añadir detalles adicionales
+                const detalles = document.createElement('div');
+                detalles.className = 'user-details';
+                detalles.innerHTML = `
+                    <p><strong>Fecha:</strong> ${fechaFormateada}</p>
+                    <p><small>Resultados cargados desde almacenamiento local</small></p>
+                `;
+                
+                // Añadir detalles antes de los gráficos
+                const headerContainer = document.querySelector('.user-results-header');
+                if (headerContainer.querySelector('.user-details')) {
+                    headerContainer.querySelector('.user-details').remove();
+                }
+                headerContainer.appendChild(detalles);
+                
+                return;
+            } catch (error) {
+                console.error("Error al procesar datos locales:", error);
+                userResultsContainer.innerHTML = `<p class="error">Error al cargar los resultados locales.</p>`;
+                return;
+            }
+        } else {
+            userResultsContainer.innerHTML = `<p>No se encontraron resultados para ${usuario}</p>`;
+            return;
+        }
+    }
+    
+    // Si Firebase está disponible, obtener resultados desde Firestore
+    db.collection("resultados_disc").doc(usuario).get()
+        .then((doc) => {
+            if (doc.exists) {
+                const datosUsuario = doc.data();
+                const resultadosUsuario = datosUsuario.resultados;
+                
+                // Limpiar canvas previos si existen
+                const trabajoCanvas = document.getElementById('admin-chart-trabajo');
+                const privadoCanvas = document.getElementById('admin-chart-privado');
+                
+                // Asegurarse de que los canvas estén limpios
+                const trabajoCtx = trabajoCanvas.getContext('2d');
+                const privadoCtx = privadoCanvas.getContext('2d');
+                
+                trabajoCtx.clearRect(0, 0, trabajoCanvas.width, trabajoCanvas.height);
+                privadoCtx.clearRect(0, 0, privadoCanvas.width, privadoCanvas.height);
+                
+                // Crear gráficos
+                createChart('admin-chart-trabajo', resultadosUsuario.trabajo, 'Ámbito Laboral');
+                createChart('admin-chart-privado', resultadosUsuario.privado, 'Ámbito Privado');
+                
+                // Mostrar fecha del test
+                const fechaTest = datosUsuario.fecha ? new Date(datosUsuario.fecha.toDate()) : new Date();
+                const fechaFormateada = fechaTest.toLocaleDateString() + ' ' + fechaTest.toLocaleTimeString();
+                
+                // Añadir detalles adicionales
+                const detalles = document.createElement('div');
+                detalles.className = 'user-details';
+                detalles.innerHTML = `
+                    <p><strong>Fecha:</strong> ${fechaFormateada}</p>
+                `;
+                
+                // Añadir detalles antes de los gráficos
+                const headerContainer = document.querySelector('.user-results-header');
+                if (headerContainer.querySelector('.user-details')) {
+                    headerContainer.querySelector('.user-details').remove();
+                }
+                headerContainer.appendChild(detalles);
+                
+            } else {
+                // Intentar buscar en localStorage como respaldo
+                const datosGuardados = localStorage.getItem(`resultados_${usuario}`);
+                
+                if (datosGuardados) {
+                    try {
+                        const datosUsuario = JSON.parse(datosGuardados);
+                        const resultadosUsuario = datosUsuario.resultados;
+                        
+                        // Crear gráficos
+                        createChart('admin-chart-trabajo', resultadosUsuario.trabajo, 'Ámbito Laboral');
+                        createChart('admin-chart-privado', resultadosUsuario.privado, 'Ámbito Privado');
+                        
+                        // Mostrar detalles
+                        const fechaTest = new Date(datosUsuario.fecha || new Date());
+                        const fechaFormateada = fechaTest.toLocaleDateString() + ' ' + fechaTest.toLocaleTimeString();
+                        
+                        const detalles = document.createElement('div');
+                        detalles.className = 'user-details';
+                        detalles.innerHTML = `
+                            <p><strong>Fecha:</strong> ${fechaFormateada}</p>
+                            <p><small>Resultados cargados desde almacenamiento local</small></p>
+                        `;
+                        
+                        const headerContainer = document.querySelector('.user-results-header');
+                        if (headerContainer.querySelector('.user-details')) {
+                            headerContainer.querySelector('.user-details').remove();
+                        }
+                        headerContainer.appendChild(detalles);
+                        
+                    } catch (error) {
+                        console.error("Error al procesar datos locales:", error);
+                        userResultsContainer.innerHTML = `<p class="error">Error al cargar los resultados.</p>`;
+                    }
+                } else {
+                    userResultsContainer.innerHTML = `<p>No se encontraron resultados para ${usuario}</p>`;
+                }
+            }
+        })
+        .catch((error) => {
+            console.error("Error al obtener resultados desde Firebase:", error);
+            
+            // Intentar buscar en localStorage como respaldo
+            const datosGuardados = localStorage.getItem(`resultados_${usuario}`);
+            
+            if (datosGuardados) {
+                try {
+                    const datosUsuario = JSON.parse(datosGuardados);
+                    const resultadosUsuario = datosUsuario.resultados;
+                    
+                    // Crear gráficos
+                    createChart('admin-chart-trabajo', resultadosUsuario.trabajo, 'Ámbito Laboral');
+                    createChart('admin-chart-privado', resultadosUsuario.privado, 'Ámbito Privado');
+                    
+                    // Mostrar detalles
+                    const fechaTest = new Date(datosUsuario.fecha || new Date());
+                    const fechaFormateada = fechaTest.toLocaleDateString() + ' ' + fechaTest.toLocaleTimeString();
+                    
+                    const detalles = document.createElement('div');
+                    detalles.className = 'user-details';
+                    detalles.innerHTML = `
+                        <p><strong>Fecha:</strong> ${fechaFormateada}</p>
+                        <p><small>Resultados cargados desde almacenamiento local</small></p>
+                    `;
+                    
+                    const headerContainer = document.querySelector('.user-results-header');
+                    if (headerContainer.querySelector('.user-details')) {
+                        headerContainer.querySelector('.user-details').remove();
+                    }
+                    headerContainer.appendChild(detalles);
+                    
+                } catch (error) {
+                    console.error("Error al procesar datos locales:", error);
+                    userResultsContainer.innerHTML = `<p class="error">Error al cargar los resultados.</p>`;
+                }
+            } else {
+                userResultsContainer.innerHTML = `<p class="error">Error al cargar los resultados.</p>`;
+            }
+        });
+}
+
+// Cargar pregunta actual
+function loadQuestion() {
+    if (currentGroupIndex >= discData.grupos.length) {
+        calculateResults();
+        displayResults();
+        return;
+    }
+    
+    // Actualizar título según la sección
+    contextTitle.textContent = currentSection === 'trabajo' 
+        ? discData.instrucciones.trabajo 
+        : discData.instrucciones.privado;
+    
+    // Actualizar número de grupo
+    groupNumber.textContent = `${currentGroupIndex + 1} de ${discData.grupos.length}`;
+    
+    // Cargar grupo de adjetivos
+    loadGroup(currentGroupIndex);
+}
+
+// Inicializar las respuestas con valores predeterminados
+function inicializarRespuestas() {
+    discData.grupos.forEach((grupo, grupoIndex) => {
+        // Para ámbito laboral
+        sessionStorage.removeItem(`trabajo_${grupoIndex}`);
+        
+        // Para ámbito privado
+        sessionStorage.removeItem(`privado_${grupoIndex}`);
+    });
+}
+
+// Cargar grupo actual de adjetivos
+function loadGroup(index) {
+    if (!discData || index >= discData.grupos.length) return;
+    
+    const grupo = discData.grupos[index];
+    const adjetivos = grupo[currentSection];
+    
+    console.log('Cargando grupo:', index, 'sección:', currentSection);
+    console.log('Adjetivos:', adjetivos);
+    
+    // Actualizar la barra de progreso
+    const totalGroups = discData.grupos.length * 2;  // Total de grupos (trabajo + privado)
+    const currentProgress = index + (currentSection === 'privado' ? discData.grupos.length : 0);
+    const progress = ((currentProgress + 1) / totalGroups) * 100;
+    progressBar.style.width = `${progress}%`;
+    
+    // Añadir o quitar clase según la sección actual
+    if (currentSection === 'privado') {
+        document.body.classList.add('seccion-privado');
+    } else {
+        document.body.classList.remove('seccion-privado');
+    }
+    
+    // Crear el HTML para el grupo de adjetivos
+    adjectivesContainer.innerHTML = `
+        <div class="question-container">
+            <p class="question-text">Ordena los siguientes adjetivos según te describan (1 = más, 4 = menos)</p>
+        </div>
+        <div class="options">
+            ${generarOpcionesHTML(adjetivos, index)}
+        </div>
+    `;
+    
+    // Añadir eventos a los botones después de generar el HTML
+    const botones = adjectivesContainer.querySelectorAll('.adjetivo-btn');
+    console.log('Botones encontrados:', botones.length);
+    
+    // Asignar eventos a cada botón con un retraso mínimo para asegurar que se registren correctamente
+    setTimeout(() => {
+        botones.forEach((boton, i) => {
+            boton.addEventListener('click', function(e) {
+                e.preventDefault(); // Prevenir comportamiento por defecto
+                console.log('Botón clickeado:', i);
+                const adjetivoTexto = adjetivos[i].adjetivo;
+                console.log('Adjetivo seleccionado:', adjetivoTexto);
+                seleccionarAdjetivo(adjetivoTexto, true); // Pasamos true para indicar que no debe recargar
+            });
+            
+            // Verificar que el evento se ha añadido correctamente
+            console.log(`Evento click añadido al botón ${i} - ${adjetivos[i].adjetivo}`);
+        });
+        
+        // Añadir evento al botón de reiniciar
+        const resetButton = adjectivesContainer.querySelector('#reset-selection');
+        if (resetButton) {
+            resetButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Botón reiniciar clickeado');
+                reiniciarSeleccion();
+            });
+            console.log('Botón de reinicio configurado');
+        } else {
+            console.error('No se encontró el botón de reinicio');
+        }
+    }, 10);
+    
+    // Actualizar visibilidad de los botones
+    prevButton.style.visibility = (index === 0 && currentSection === 'trabajo') ? 'hidden' : 'visible';
+    
+    if (index === discData.grupos.length - 1 && currentSection === 'privado') {
+        nextButton.textContent = 'Ver resultados';
+    } else {
+        nextButton.textContent = 'Siguiente';
+    }
+    
+    // Comprobar si este grupo ya tiene selecciones y actualizar el botón siguiente
+    verificarCompletitud();
+}
+
+// Generar HTML para las opciones de respuesta
+function generarOpcionesHTML(adjetivos, grupoIndex) {
+    // Obtener puntuaciones previas si existen
+    let puntuacionesGuardadas = {};
+    const storedAnswers = sessionStorage.getItem(`${currentSection}_${grupoIndex}`);
+    
+    if (storedAnswers) {
+        puntuacionesGuardadas = JSON.parse(storedAnswers);
+    }
+    
+    // Crear opciones HTML
+    let opcionesHTML = '';
+    
+    // Añadir contenedor para adjetivos
+    opcionesHTML += '<div class="adjetivos-container">';
+    
+    // Generar botones para cada adjetivo
+    adjetivos.forEach((item, index) => {
+        const savedScore = puntuacionesGuardadas[item.adjetivo] || '';
+        const selectedClass = savedScore ? 'selected' : '';
+        
+        opcionesHTML += `
+            <div class="adjetivo-btn-container">
+                <button class="adjetivo-btn ${selectedClass}" data-index="${index}">
+                    ${item.adjetivo}
+                    ${savedScore ? `<span class="numero-seleccion">${savedScore}</span>` : ''}
+                </button>
+            </div>
+        `;
+    });
+    
+    opcionesHTML += '</div>';
+    
+    // Añadir botón para reiniciar selección
+    opcionesHTML += `
+        <div class="control-buttons">
+            <button id="reset-selection">Reiniciar selección</button>
+        </div>
+    `;
+    
+    return opcionesHTML;
+}
+
+// Seleccionar un adjetivo en el orden deseado
+function seleccionarAdjetivo(adjetivo, noRecargar = false) {
+    const grupoIndex = currentGroupIndex;
+    
+    console.log('Función seleccionarAdjetivo llamada con:', adjetivo);
+    console.log('Grupo actual:', grupoIndex, 'Sección:', currentSection);
+    
+    // Obtener puntuaciones existentes o crear nuevo objeto
+    let puntuacionesGuardadas = {};
+    const storedAnswers = sessionStorage.getItem(`${currentSection}_${grupoIndex}`);
+    
+    if (storedAnswers) {
+        try {
+            puntuacionesGuardadas = JSON.parse(storedAnswers);
+            console.log('Puntuaciones guardadas encontradas:', puntuacionesGuardadas);
+        } catch (e) {
+            console.error('Error al parsear respuestas guardadas:', e);
+            // Continuar con un objeto vacío
+        }
+    }
+    
+    // Si ya está seleccionado, no hacer nada
+    if (puntuacionesGuardadas[adjetivo]) {
+        console.log('Adjetivo ya seleccionado, no se hace nada');
+        return;
+    }
+    
+    // Determinar el siguiente número a asignar (1, 2, 3 o 4)
+    const valoresUsados = Object.values(puntuacionesGuardadas);
+    let siguienteValor = 1;
+    
+    // Encontrar el siguiente valor disponible
+    while (valoresUsados.includes(siguienteValor) && siguienteValor <= 4) {
+        siguienteValor++;
+    }
+    
+    console.log('Siguiente valor a asignar:', siguienteValor);
+    
+    // Si ya se han seleccionado 4 adjetivos, no hacer nada
+    if (siguienteValor > 4) {
+        console.log('Ya se seleccionaron 4 adjetivos, no se puede asignar más');
+        return;
+    }
+    
+    // Asignar el siguiente valor al adjetivo seleccionado
+    puntuacionesGuardadas[adjetivo] = siguienteValor;
+    
+    // Guardar en sessionStorage
+    try {
+        const jsonString = JSON.stringify(puntuacionesGuardadas);
+        sessionStorage.setItem(`${currentSection}_${grupoIndex}`, jsonString);
+        console.log('Nuevas puntuaciones guardadas:', puntuacionesGuardadas);
+        console.log('JSON guardado en sessionStorage:', jsonString);
+    } catch (e) {
+        console.error('Error al guardar en sessionStorage:', e);
+        alert('Hubo un problema al guardar tu respuesta. Por favor, inténtalo de nuevo.');
+    }
+    
+    // Actualizar la UI - llamamos a loadGroup para reconstruir completamente la UI
+    if (!noRecargar) {
+        loadGroup(currentGroupIndex);
+    } else {
+        // Actualizamos solo lo necesario sin recargar todo
+        actualizarUIManualmente(puntuacionesGuardadas);
+    }
+    
+    // Verificar si se completó la selección
+    verificarCompletitud();
+    
+    // Devolver verdadero si se pudo asignar la puntuación
+    return true;
+}
+
+// Actualizar manualmente los elementos UI sin recargar todo el grupo
+function actualizarUIManualmente(puntuacionesGuardadas) {
+    console.log('Actualizando UI manualmente con:', puntuacionesGuardadas);
+    
+    const adjetivos = discData.grupos[currentGroupIndex][currentSection];
+    const botones = adjectivesContainer.querySelectorAll('.adjetivo-btn');
+    
+    if (botones.length !== adjetivos.length) {
+        console.error(`Error de coincidencia: ${botones.length} botones vs ${adjetivos.length} adjetivos`);
+        // Si hay discrepancia, mejor recargar todo el grupo
+        loadGroup(currentGroupIndex);
+        return;
+    }
+    
+    // Limpiar todos los botones primero
+    botones.forEach(boton => {
+        boton.classList.remove('selected');
+        const numeroSpan = boton.querySelector('.numero-seleccion');
+        if (numeroSpan) {
+            boton.removeChild(numeroSpan);
+        }
+    });
+    
+    // Ahora actualizar según las puntuaciones guardadas
+    botones.forEach((boton, i) => {
+        const adjetivoTexto = adjetivos[i].adjetivo;
+        const puntuacion = puntuacionesGuardadas[adjetivoTexto];
+        
+        if (puntuacion) {
+            boton.classList.add('selected');
+            
+            // Crear un nuevo elemento de número
+            const numeroSpan = document.createElement('span');
+            numeroSpan.className = 'numero-seleccion';
+            numeroSpan.textContent = puntuacion;
+            boton.appendChild(numeroSpan);
+            
+            console.log(`Actualizado botón para "${adjetivoTexto}" con puntuación ${puntuacion}`);
+        }
+    });
+    
+    // Verificar completitud para actualizar el botón de siguiente
+    verificarCompletitud();
+}
+
+// Actualizar la interfaz visual con los adjetivos seleccionados
+function actualizarInterfazAdjetivos(puntuacionesGuardadas) {
+    // Simplemente recargamos el grupo actual, que reconstruirá todo el HTML
+    loadGroup(currentGroupIndex);
+}
+
+// Reiniciar la selección actual
+function reiniciarSeleccion() {
+    // Eliminar datos del grupo actual
+    sessionStorage.removeItem(`${currentSection}_${currentGroupIndex}`);
+    
+    // Actualizar UI
+    const botonesAdjetivos = adjectivesContainer.querySelectorAll('.adjetivo-btn');
+    botonesAdjetivos.forEach(boton => {
+        boton.classList.remove('selected');
+        const numeroSpan = boton.querySelector('.numero-seleccion');
+        if (numeroSpan) {
+            boton.removeChild(numeroSpan);
+        }
+    });
+    
+    // Deshabilitar botón siguiente
+    nextButton.disabled = true;
+}
+
+// Verificar si todas las opciones del grupo actual han sido puntuadas
+function verificarCompletitud() {
+    const puntuacionesGuardadas = sessionStorage.getItem(`${currentSection}_${currentGroupIndex}`);
+    if (puntuacionesGuardadas) {
+        const respuestas = JSON.parse(puntuacionesGuardadas);
+        const cantidadRespuestas = Object.keys(respuestas).length;
+        
+        // Si todas las opciones tienen puntuación, habilitar el botón
+        if (cantidadRespuestas === 4) {
+            nextButton.disabled = false;
+        } else {
+            nextButton.disabled = true;
+        }
+    } else {
+        nextButton.disabled = true;
     }
 }
 
-// Mostrar resultados
-function showResults() {
-    quizSection.classList.add('hidden');
-    resultsSection.classList.remove('hidden');
-    resultName.textContent = userName;
+// Navegar al grupo anterior
+prevButton.addEventListener('click', () => {
+    if (currentGroupIndex > 0 || currentSection === 'privado') {
+        if (currentGroupIndex === 0 && currentSection === 'privado') {
+            currentSection = 'trabajo';
+            currentGroupIndex = discData.grupos.length - 1;
+        } else {
+            currentGroupIndex--;
+        }
+        
+        // Usar loadQuestion en lugar de loadGroup para asegurar que se actualice el número del grupo
+        loadQuestion();
+    }
+});
+
+// Navegar al siguiente grupo o finalizar
+nextButton.addEventListener('click', () => {
+    console.log('Botón siguiente/ver resultados clickeado');
+    console.log('Estado actual: Grupo', currentGroupIndex, 'Sección', currentSection);
+    console.log('Último grupo?', currentGroupIndex === discData.grupos.length - 1);
     
-    // Crear gráfica de resultados
-    const ctx = document.getElementById('results-chart').getContext('2d');
-    const chart = new Chart(ctx, {
+    // Si es el último grupo y estamos en sección privada, mostrar resultados
+    if (currentGroupIndex === discData.grupos.length - 1 && currentSection === 'privado') {
+        console.log('Condición cumplida para mostrar resultados');
+        calculateResults();
+        displayResults();
+        return;
+    }
+    
+    // Navegar al siguiente grupo o cambiar de sección
+    if (currentGroupIndex < discData.grupos.length - 1) {
+        // Siguiente grupo en la misma sección
+        currentGroupIndex++;
+        console.log('Avanzando al siguiente grupo:', currentGroupIndex);
+    } else if (currentSection === 'trabajo') {
+        // Cambiar de sección trabajo a privado
+        currentSection = 'privado';
+        currentGroupIndex = 0;
+        console.log('Cambiando a sección privado');
+    }
+    
+    // Usar loadQuestion en lugar de loadGroup para asegurar que se actualice el número del grupo
+    loadQuestion();
+});
+
+// Calcular resultados
+function calculateResults() {
+    console.log('Ejecutando función calculateResults');
+    
+    // Reiniciar los resultados
+    resultados = {
+        trabajo: { D: 0, I: 0, S: 0, C: 0 },
+        privado: { D: 0, I: 0, S: 0, C: 0 }
+    };
+    
+    console.log('Procesando respuestas de cada grupo...');
+    
+    // Recorrer grupos y calcular puntuaciones
+    for (let i = 0; i < discData.grupos.length; i++) {
+        // Procesar ámbito laboral
+        const respuestasTrabajo = sessionStorage.getItem(`trabajo_${i}`);
+        if (respuestasTrabajo) {
+            const respuestasObj = JSON.parse(respuestasTrabajo);
+            console.log(`Grupo ${i} - trabajo:`, respuestasObj);
+            
+            // Asignar puntos según las respuestas
+            for (let adjetivo in respuestasObj) {
+                const puntuacion = respuestasObj[adjetivo];
+                const tipo = obtenerTipoAdjetivo(adjetivo, i, 'trabajo');
+                
+                // La puntuación más baja (1) aporta más puntos (4)
+                const puntosDISC = 5 - puntuacion;
+                resultados.trabajo[tipo] += puntosDISC;
+                
+                console.log(`  ${adjetivo} (${tipo}): ${puntuacion} → ${puntosDISC} puntos`);
+            }
+        } else {
+            console.warn(`No hay respuestas guardadas para grupo ${i} - trabajo`);
+        }
+        
+        // Procesar ámbito privado
+        const respuestasPrivado = sessionStorage.getItem(`privado_${i}`);
+        if (respuestasPrivado) {
+            const respuestasObj = JSON.parse(respuestasPrivado);
+            console.log(`Grupo ${i} - privado:`, respuestasObj);
+            
+            // Asignar puntos según las respuestas
+            for (let adjetivo in respuestasObj) {
+                const puntuacion = respuestasObj[adjetivo];
+                const tipo = obtenerTipoAdjetivo(adjetivo, i, 'privado');
+                
+                // La puntuación más baja (1) aporta más puntos (4)
+                const puntosDISC = 5 - puntuacion;
+                resultados.privado[tipo] += puntosDISC;
+                
+                console.log(`  ${adjetivo} (${tipo}): ${puntuacion} → ${puntosDISC} puntos`);
+            }
+        } else {
+            console.warn(`No hay respuestas guardadas para grupo ${i} - privado`);
+        }
+    }
+    
+    console.log('Resultados finales calculados:', resultados);
+    
+    // Guardar resultados en localStorage con el nombre del usuario
+    if (currentUser) {
+        localStorage.setItem(`disc_results_${currentUser}`, JSON.stringify(resultados));
+        
+        // Guardar resultados en Firebase Firestore
+        guardarResultadosEnFirebase(currentUser, resultados);
+    }
+}
+
+// Función para guardar resultados en Firebase
+function guardarResultadosEnFirebase(usuario, resultados) {
+    // Verificar primero si Firebase está disponible
+    if (!firebaseInitialized || !db) {
+        console.log("Firebase no está disponible, almacenando resultados solo localmente");
+        // Guardar datos en localStorage como respaldo
+        try {
+            const datosUsuario = {
+                nombre: usuario,
+                fecha: new Date().toISOString(),
+                resultados: resultados,
+                dispositivo: navigator.userAgent
+            };
+            
+            localStorage.setItem(`resultados_${usuario}`, JSON.stringify(datosUsuario));
+            console.log("Resultados guardados localmente con éxito");
+        } catch (error) {
+            console.error("Error al guardar localmente:", error);
+        }
+        return;
+    }
+    
+    try {
+        // Crear objeto con los datos completos
+        const datosUsuario = {
+            nombre: usuario,
+            fecha: new Date(),
+            resultados: resultados,
+            dispositivo: navigator.userAgent
+        };
+        
+        // Guardar en la colección "resultados_disc"
+        db.collection("resultados_disc").doc(usuario).set(datosUsuario)
+            .then(() => {
+                console.log("Resultados guardados correctamente en Firebase");
+            })
+            .catch((error) => {
+                console.error("Error al guardar resultados en Firebase:", error);
+                console.log("Los resultados se han guardado localmente de todos modos");
+                
+                // Guardar en localStorage como respaldo
+                try {
+                    datosUsuario.fecha = datosUsuario.fecha.toISOString(); // Convertir Date a formato string
+                    localStorage.setItem(`resultados_${usuario}`, JSON.stringify(datosUsuario));
+                    console.log("Resultados guardados localmente con éxito");
+                } catch (err) {
+                    console.error("Error al guardar localmente:", err);
+                }
+            });
+    } catch (error) {
+        console.error("Error al intentar guardar en Firebase:", error);
+        
+        // Guardar en localStorage como respaldo
+        try {
+            const datosUsuario = {
+                nombre: usuario,
+                fecha: new Date().toISOString(),
+                resultados: resultados,
+                dispositivo: navigator.userAgent
+            };
+            
+            localStorage.setItem(`resultados_${usuario}`, JSON.stringify(datosUsuario));
+            console.log("Resultados guardados localmente con éxito");
+        } catch (err) {
+            console.error("Error al guardar localmente:", err);
+        }
+    }
+}
+
+// Obtener el tipo de DISC de un adjetivo
+function obtenerTipoAdjetivo(adjetivoBuscado, grupoIndex, seccion) {
+    const grupo = discData.grupos[grupoIndex];
+    const adjetivos = grupo[seccion];
+    
+    for (let i = 0; i < adjetivos.length; i++) {
+        if (adjetivos[i].adjetivo === adjetivoBuscado) {
+            return adjetivos[i].tipo;
+        }
+    }
+    
+    return null;
+}
+
+// Mostrar los resultados
+function displayResults() {
+    console.log('Ejecutando función displayResults');
+    
+    try {
+        // Ocultar sección de cuestionario y mostrar resultados
+        discSection.classList.add('hidden');
+        resultsSection.classList.remove('hidden');
+        console.log('Secciones visibilidad cambiada - quiz hidden, results visible');
+        
+        // Ver resultados calculados
+        console.log('Resultados calculados:', resultados);
+        
+        // Verificar existencia de los elementos canvas
+        const canvasTrabajo = document.getElementById('chart-trabajo');
+        const canvasPrivado = document.getElementById('chart-privado');
+        
+        if (!canvasTrabajo || !canvasPrivado) {
+            console.error('No se encontraron los elementos canvas necesarios');
+            alert('Error al mostrar los resultados. Por favor, recarga la página.');
+            return;
+        }
+        
+        console.log('Canvas trabajo encontrado:', !!canvasTrabajo);
+        console.log('Canvas privado encontrado:', !!canvasPrivado);
+        
+        // Pequeña pausa para asegurar que el DOM se ha actualizado completamente
+        setTimeout(() => {
+            try {
+                // Crear gráficos para ambos ámbitos
+                console.log('Intentando crear gráficos...');
+                createChart('chart-trabajo', resultados.trabajo, 'Ámbito Laboral');
+                createChart('chart-privado', resultados.privado, 'Ámbito Privado');
+                console.log('Gráficos creados exitosamente');
+                
+                // Generar texto de explicación de resultados
+                const resultadosTexto = document.getElementById('resultados-texto');
+                if (resultadosTexto) {
+                    resultadosTexto.innerHTML = `
+                        <p><strong>Usuario:</strong> ${currentUser}</p>
+                        <p>Estos resultados muestran tu perfil DISC en los ámbitos laboral y privado.</p>
+                        <ul>
+                            <li><strong>D (Dominancia):</strong> ${resultados.trabajo.D} en trabajo, ${resultados.privado.D} en privado</li>
+                            <li><strong>I (Influencia):</strong> ${resultados.trabajo.I} en trabajo, ${resultados.privado.I} en privado</li>
+                            <li><strong>S (Estabilidad):</strong> ${resultados.trabajo.S} en trabajo, ${resultados.privado.S} en privado</li>
+                            <li><strong>C (Cumplimiento):</strong> ${resultados.trabajo.C} en trabajo, ${resultados.privado.C} en privado</li>
+                        </ul>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error al crear gráficos:', error);
+                alert('Error al crear los gráficos. Por favor, recarga la página e intenta de nuevo.');
+            }
+        }, 100);
+    } catch (error) {
+        console.error('Error al mostrar resultados:', error);
+        alert('Hubo un error al mostrar los resultados. Por favor, recarga la página e inténtalo de nuevo.');
+    }
+}
+
+// Crear gráfico de resultados
+function createChart(canvasId, data, title) {
+    console.log(`Creando gráfico para ${canvasId} con datos:`, data);
+    
+    // Obtener el elemento canvas
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) {
+        console.error(`No se encontró el canvas con ID ${canvasId}`);
+        return;
+    }
+    
+    // Obtener el contexto del canvas
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+        console.error(`No se pudo obtener el contexto 2D del canvas ${canvasId}`);
+        return;
+    }
+    
+    // Crear nuevo gráfico
+    try {
+    new Chart(ctx, {
         type: 'bar',
         data: {
             labels: ['D (Dominancia)', 'I (Influencia)', 'S (Estabilidad)', 'C (Cumplimiento)'],
             datasets: [{
-                label: 'Porcentaje',
-                data: [answers.D, answers.I, answers.S, answers.C],
+                    label: title,
+                    data: [data.D, data.I, data.S, data.C],
                 backgroundColor: [
-                    'rgba(255, 117, 142, 0.7)',
-                    'rgba(100, 182, 255, 0.7)',
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(54, 162, 235, 0.7)',
                     'rgba(255, 206, 86, 0.7)',
-                    'rgba(105, 212, 212, 0.7)'
+                    'rgba(75, 192, 192, 0.7)'
                 ],
                 borderColor: [
-                    'rgba(255, 117, 142, 0.9)',
-                    'rgba(100, 182, 255, 0.9)',
-                    'rgba(255, 206, 86, 0.9)',
-                    'rgba(105, 212, 212, 0.9)'
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)'
                 ],
                 borderWidth: 1
             }]
@@ -303,100 +1758,102 @@ function showResults() {
             scales: {
                 y: {
                     beginAtZero: true,
-                    max: 100,
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.08)'
-                    },
-                    ticks: {
-                        color: '#c0c0d0'
-                    }
-                },
-                x: {
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.08)'
-                    },
-                    ticks: {
-                        color: '#c0c0d0'
-                    }
+                        max: 56, // Máximo teórico (14 grupos x 4 puntos máximo)
+                        title: {
+                            display: true,
+                            text: 'Puntuación'
+                        }
                 }
             },
             plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return `${context.parsed.y}%`;
+                    title: {
+                        display: true,
+                        text: title,
+                        font: {
+                            size: 18
                         }
                     },
-                    backgroundColor: 'rgba(39, 39, 58, 0.9)',
-                    titleColor: '#f0f0f5',
-                    bodyColor: '#d1d1d8',
-                    borderColor: 'rgba(60, 60, 80, 1)',
-                    borderWidth: 1
+                legend: {
+                    display: false
+                    }
                 }
             }
-        }
-    });
-
-    // Enviar resultados por correo
-    sendResultsByEmail();
+        });
+        console.log(`Gráfico para ${canvasId} creado con éxito`);
+    } catch (error) {
+        console.error(`Error al crear el gráfico para ${canvasId}:`, error);
+        throw error; // Re-lanzar el error para que sea capturado por el llamador
+    }
 }
 
-// Función para enviar resultados por correo
+// Enviar resultados por correo electrónico
 function sendResultsByEmail() {
-    if (emailSent) return;
+    if (emailSent) return; // Evitar envíos múltiples
     
-    emailStatus.textContent = "Enviando resultados...";
-    emailStatus.className = "email-status sending";
+    // Verificar si EmailJS está configurado
+    if (typeof emailjs === 'undefined' || !emailjs.send) {
+        console.warn('EmailJS no está configurado correctamente. No se enviarán resultados por correo.');
+        emailStatus.textContent = 'Función de correo no configurada.';
+        emailStatus.style.color = 'orange';
+        return;
+    }
     
-    // Preparar el contenido del correo
-    const resultsSummary = `
-        Nombre: ${userName}
-        
-        Resultados DISC:
-        - Dominancia (D): ${answers.D}%
-        - Influencia (I): ${answers.I}%
-        - Estabilidad (S): ${answers.S}%
-        - Cumplimiento (C): ${answers.C}%
-    `;
+    // Mostrar estado de envío
+    emailStatus.textContent = 'Enviando resultados...';
+    emailStatus.style.color = 'blue';
     
-    const emailParams = {
-        to_email: "namaruiz@gmail.com",
-        subject: `Resultados Cuestionario DISC - ${userName}`,
-        message: resultsSummary
+    // Preparar los datos para enviar
+    const templateParams = {
+        to_email: 'namaruiz@gmail.com', // Correo del destinatario
+        from_name: 'Cuestionario DISC',
+        user_name: currentUser,
+        result_trabajo_d: resultados.trabajo.D,
+        result_trabajo_i: resultados.trabajo.I,
+        result_trabajo_s: resultados.trabajo.S,
+        result_trabajo_c: resultados.trabajo.C,
+        result_privado_d: resultados.privado.D,
+        result_privado_i: resultados.privado.I,
+        result_privado_s: resultados.privado.S,
+        result_privado_c: resultados.privado.C
     };
     
-    // Enviar el correo usando EmailJS
-    emailjs.send('default_service', 'template_id', emailParams)
-        .then(function(response) {
-            emailStatus.textContent = "¡Resultados enviados correctamente!";
-            emailStatus.className = "email-status success";
-            emailSent = true;
-        }, function(error) {
-            emailStatus.textContent = "Error al enviar resultados. Por favor, inténtalo de nuevo.";
-            emailStatus.className = "email-status error";
-        });
+    try {
+        // Enviar el correo usando EmailJS
+        emailjs.send('default_service', 'template_id', templateParams)
+            .then(function(response) {
+                console.log('SUCCESS!', response.status, response.text);
+                emailStatus.textContent = 'Resultados enviados correctamente.';
+                emailStatus.style.color = 'green';
+                emailSent = true;
+            }, function(error) {
+                console.error('FAILED...', error);
+                emailStatus.textContent = 'Error al enviar: verifica la configuración de EmailJS.';
+                emailStatus.style.color = 'red';
+            });
+    } catch (error) {
+        console.error('Error al intentar enviar correo:', error);
+        emailStatus.textContent = 'Error en la función de correo.';
+        emailStatus.style.color = 'red';
+    }
 }
 
 // Reiniciar el cuestionario
-restartBtn.addEventListener('click', () => {
-    // Limpiar datos de sessionStorage
-    for (let i = 0; i < discQuestions.length; i++) {
-        sessionStorage.removeItem(`question_${i}`);
+restartButton.addEventListener('click', () => {
+    // Limpiar datos de sesión
+    for (let i = 0; i < discData.grupos.length; i++) {
+        sessionStorage.removeItem(`trabajo_${i}`);
+        sessionStorage.removeItem(`privado_${i}`);
     }
     
     // Reiniciar variables
-    currentQuestionIndex = 0;
+    currentGroupIndex = 0;
+    currentSection = 'trabajo';
     emailSent = false;
     
     // Volver a la pantalla inicial
     resultsSection.classList.add('hidden');
     introSection.classList.remove('hidden');
-    document.getElementById('username').value = userName;
     
-    // Limpiar el estado del correo
-    emailStatus.textContent = "";
-    emailStatus.className = "email-status";
+    // Limpiar campo de nombre
+    document.getElementById('nombre-usuario').value = '';
 }); 

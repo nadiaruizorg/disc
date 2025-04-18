@@ -1,49 +1,88 @@
 # Aplicación de Cuestionario DISC
 
-Esta es una aplicación web simple que implementa un cuestionario DISC basado en el archivo Excel proporcionado. La aplicación permite a los usuarios:
-
-1. Ingresar su nombre
-2. Responder a un cuestionario DISC de 20 preguntas
-3. Ver sus resultados en un gráfico visual
+Esta aplicación web permite a los usuarios completar un cuestionario DISC (Dominancia, Influencia, Estabilidad, Cumplimiento) para evaluar su perfil de comportamiento tanto en ámbito laboral como personal.
 
 ## Características
 
-- Interfaz responsive adaptada para dispositivos móviles
-- Progreso del cuestionario con indicador visual
-- Almacenamiento local de respuestas para navegación entre preguntas
+- Cuestionario DISC completo con 14 grupos de preguntas
+- Evaluación separada para contextos laborales y personales
 - Visualización de resultados con gráficos
-- Explicaciones básicas de cada tipo DISC
+- Panel de administración para ver resultados de todos los usuarios
+- Almacenamiento en Firebase Firestore con respaldo local
+- Funciona tanto online como offline
 
-## Tecnologías utilizadas
+## Archivos del Proyecto
 
-- HTML5
-- CSS3
-- JavaScript (Vanilla)
-- Chart.js para la visualización de gráficos
+- `index.html`: Página principal con el cuestionario DISC
+- `script.js`: Lógica principal de la aplicación
+- `styles.css`: Estilos de la aplicación
+- `test_results.html`: Página de prueba para visualizar resultados de ejemplo
+- `admin_test.html`: Panel de administración para ver resultados de todos los usuarios
+- `firebase_test.html`: Herramienta de diagnóstico para la conexión con Firebase
 
-## Cómo ejecutar
+## Configuración
 
-Para ejecutar esta aplicación, simplemente abre el archivo `index.html` en tu navegador web. También puedes utilizar un servidor web local como:
+### Requisitos Previos
 
-```bash
-# Con Python
-python -m http.server 8000
+1. Cuenta en Firebase con Firestore habilitado
+2. Configuración de reglas de seguridad en Firestore
 
-# Con Node.js (requiere instalación de http-server)
-npx http-server
+### Configuración de Firebase
+
+La aplicación ya incluye la configuración de Firebase, pero si deseas usar tu propia base de datos, debes modificar el objeto `firebaseConfig` en los archivos JS:
+
+```javascript
+const firebaseConfig = {
+    apiKey: "TU_API_KEY",
+    authDomain: "TU_AUTH_DOMAIN",
+    projectId: "TU_PROJECT_ID",
+    storageBucket: "TU_STORAGE_BUCKET",
+    messagingSenderId: "TU_MESSAGING_SENDER_ID",
+    appId: "TU_APP_ID"
+};
 ```
 
-## Personalización
+### Reglas de Seguridad de Firestore
 
-Las preguntas del cuestionario DISC se encuentran en el archivo `script.js` y pueden ser modificadas según sea necesario. También puedes personalizar los estilos en el archivo `styles.css`.
+Para desarrollo, puedes usar estas reglas (no recomendadas para producción):
 
-## Sobre DISC
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
+```
 
-El modelo DISC es una herramienta de evaluación de comportamiento que clasifica a las personas en cuatro tipos principales:
+## Uso
 
-- **D (Dominancia)**: Orientado a resultados, directo y decisivo
-- **I (Influencia)**: Orientado a personas, comunicativo y entusiasta
-- **S (Estabilidad)**: Orientado a la colaboración, paciente y confiable
-- **C (Cumplimiento)**: Orientado a la calidad, analítico y meticuloso
+1. Abre `index.html` en un servidor web (puedes usar `http-server` o cualquier servidor local)
+2. Ingresa tu nombre
+3. Completa el cuestionario para el ámbito laboral
+4. Completa el cuestionario para el ámbito personal
+5. Visualiza tus resultados
 
-Esta aplicación proporciona una evaluación básica de estos rasgos basada en las respuestas del usuario. 
+### Modo Administrador
+
+Para acceder al panel de administrador, ingresa el nombre "Nadia Ruiz" en la página principal.
+
+## Desarrollo Local
+
+Para ejecutar la aplicación localmente:
+
+```bash
+# Instala http-server si no lo tienes
+npm install -g http-server
+
+# Ejecuta el servidor
+http-server -p 8080 -c-1
+```
+
+Luego abre `http://localhost:8080` en tu navegador.
+
+## Licencia
+
+Este proyecto es de código abierto bajo la licencia MIT. 
