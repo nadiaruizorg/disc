@@ -291,7 +291,7 @@ const discData = {
       "id": 6,
       "trabajo": [
         {
-          "adjetivo": "Respestuoso",
+          "adjetivo": "Respetuoso",
           "tipo": "S"
         },
         {
@@ -309,7 +309,7 @@ const discData = {
       ],
       "privado": [
         {
-          "adjetivo": "Respestuoso",
+          "adjetivo": "Respetuoso",
           "tipo": "S"
         },
         {
@@ -1830,7 +1830,7 @@ function createChart(canvasId, data, title) {
                         display: false
                     },
                     title: {
-                        display: true,
+                        display: false,
                         text: title,
                         font: {
                             size: 16,
