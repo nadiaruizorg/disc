@@ -1556,15 +1556,8 @@ function calculateResults() {
                 const puntuacion = respuestasObj[adjetivo];
                 const tipo = obtenerTipoAdjetivo(adjetivo, i, 'trabajo');
                 
-                // Puntuaciones más diferenciadas: 4, 2, 1, 0.5 en lugar de 4, 3, 2, 1
-                let puntosDISC;
-                switch(puntuacion) {
-                    case 1: puntosDISC = 4; break;   // Primera opción (más descriptiva)
-                    case 2: puntosDISC = 2; break;   // Segunda opción
-                    case 3: puntosDISC = 1; break;   // Tercera opción
-                    case 4: puntosDISC = 0.5; break; // Cuarta opción (menos descriptiva)
-                    default: puntosDISC = 0;
-                }
+                // La puntuación más baja (1) aporta más puntos (4)
+                const puntosDISC = 5 - puntuacion;
                 resultados.trabajo[tipo] += puntosDISC;
                 
                 console.log(`  ${adjetivo} (${tipo}): ${puntuacion} → ${puntosDISC} puntos`);
@@ -1584,15 +1577,8 @@ function calculateResults() {
                 const puntuacion = respuestasObj[adjetivo];
                 const tipo = obtenerTipoAdjetivo(adjetivo, i, 'privado');
                 
-                // Puntuaciones más diferenciadas: 4, 2, 1, 0.5 en lugar de 4, 3, 2, 1
-                let puntosDISC;
-                switch(puntuacion) {
-                    case 1: puntosDISC = 4; break;   // Primera opción (más descriptiva)
-                    case 2: puntosDISC = 2; break;   // Segunda opción
-                    case 3: puntosDISC = 1; break;   // Tercera opción
-                    case 4: puntosDISC = 0.5; break; // Cuarta opción (menos descriptiva)
-                    default: puntosDISC = 0;
-                }
+                // La puntuación más baja (1) aporta más puntos (4)
+                const puntosDISC = 5 - puntuacion;
                 resultados.privado[tipo] += puntosDISC;
                 
                 console.log(`  ${adjetivo} (${tipo}): ${puntuacion} → ${puntosDISC} puntos`);
