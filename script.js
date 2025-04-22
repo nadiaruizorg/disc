@@ -615,18 +615,8 @@ let currentUser = ''; // Variable para almacenar el nombre del usuario actual
 
 // Variables globales para resultados
 let resultados = {
-    trabajo: {
-    D: 0,
-    I: 0,
-    S: 0,
-    C: 0
-    },
-    privado: {
-        D: 0,
-        I: 0,
-        S: 0,
-        C: 0
-    }
+    trabajo: { D: 0, I: 0, S: 0, C: 0 },
+    privado: { D: 0, I: 0, S: 0, C: 0 }
 };
 
 // Elementos del DOM
@@ -667,6 +657,10 @@ startButton.addEventListener('click', () => {
     }
 });
 
+// Variables para ordenación
+let ordenActual = 'nombre';
+let ordenAscendente = true;
+
 // Función para mostrar el panel de administrador
 function mostrarPanelAdmin() {
     // Ocultar todas las secciones visibles
@@ -689,6 +683,11 @@ function mostrarPanelAdmin() {
             <div class="admin-content">
                 <div id="users-list-container">
                     <h3>Usuarios que han completado el cuestionario:</h3>
+                    <div class="sort-options">
+                        <span>Ordenar por: </span>
+                        <button id="sort-by-name" class="sort-btn active">Nombre</button>
+                        <button id="sort-by-date" class="sort-btn">Fecha</button>
+                    </div>
                     <div id="users-list" class="users-list"></div>
             </div>
                 
@@ -776,17 +775,68 @@ function mostrarPanelAdmin() {
             document.getElementById('user-results-container').classList.add('hidden');
             document.getElementById('users-list-container').classList.remove('hidden');
         });
+        
+        // Agregar eventos para los botones de ordenación
+        // Función para actualizar etiquetas de los botones con indicadores de orden
+        function actualizarBotonesOrden() {
+            const nombreBtn = document.getElementById('sort-by-name');
+            const fechaBtn = document.getElementById('sort-by-date');
+            
+            // Resetear textos
+            nombreBtn.textContent = "Nombre";
+            fechaBtn.textContent = "Fecha";
+            
+            // Añadir indicador al botón activo
+            if (ordenActual === 'nombre') {
+                nombreBtn.textContent = `Nombre ${ordenAscendente ? '↑' : '↓'}`;
+            } else {
+                fechaBtn.textContent = `Fecha ${ordenAscendente ? '↑' : '↓'}`;
+            }
+        }
+
+        document.getElementById('sort-by-name').addEventListener('click', () => {
+            // Si ya estaba activo, invertir el orden
+            if (ordenActual === 'nombre') {
+                ordenAscendente = !ordenAscendente;
+            } else {
+                ordenActual = 'nombre';
+                ordenAscendente = true;
+            }
+            
+            document.getElementById('sort-by-name').classList.add('active');
+            document.getElementById('sort-by-date').classList.remove('active');
+            actualizarBotonesOrden();
+            cargarListaUsuarios(ordenActual, ordenAscendente);
+        });
+
+        document.getElementById('sort-by-date').addEventListener('click', () => {
+            // Si ya estaba activo, invertir el orden
+            if (ordenActual === 'fecha') {
+                ordenAscendente = !ordenAscendente;
+            } else {
+                ordenActual = 'fecha';
+                ordenAscendente = false; // Por defecto, las fechas más recientes primero
+            }
+            
+            document.getElementById('sort-by-name').classList.remove('active');
+            document.getElementById('sort-by-date').classList.add('active');
+            actualizarBotonesOrden();
+            cargarListaUsuarios(ordenActual, ordenAscendente);
+        });
+        
+        // Inicializar los indicadores de orden
+        actualizarBotonesOrden();
     } else {
         // Si ya existe, simplemente mostrarlo
         adminSection.classList.remove('hidden');
     }
     
-    // Cargar la lista de usuarios
-    cargarListaUsuarios();
+    // Cargar la lista de usuarios (por defecto ordenada por nombre)
+    cargarListaUsuarios(ordenActual, ordenAscendente);
 }
 
 // Función para cargar la lista de usuarios
-function cargarListaUsuarios() {
+function cargarListaUsuarios(ordenarPor = 'nombre', ascendente = true) {
     const usersListContainer = document.getElementById('users-list');
     usersListContainer.innerHTML = '<p>Cargando usuarios...</p>';
     
@@ -795,29 +845,95 @@ function cargarListaUsuarios() {
         console.log("Firebase no está disponible, intentando cargar datos de localStorage");
         
         // Buscar usuarios en localStorage como respaldo
-        const usuarios = [];
+        const usuariosData = [];
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             if (key && key.startsWith('resultados_')) {
-                const nombreUsuario = key.replace('resultados_', '');
-                usuarios.push(nombreUsuario);
+                try {
+                    const datos = JSON.parse(localStorage.getItem(key));
+                    const nombreUsuario = key.replace('resultados_', '');
+                    console.log("LocalStorage - datos usuario:", nombreUsuario, datos);
+                    
+                    // Intentar convertir la fecha a objeto Date
+                    let fechaObj;
+                    try {
+                        if (datos.fecha) {
+                            fechaObj = new Date(datos.fecha);
+                            console.log("LocalStorage - fecha convertida:", fechaObj);
+                        } else {
+                            fechaObj = new Date();
+                            console.log("LocalStorage - sin fecha, usando actual:", fechaObj);
+                        }
+                    } catch (error) {
+                        console.error("Error al convertir fecha:", error);
+                        fechaObj = new Date();
+                    }
+                    
+                    usuariosData.push({
+                        nombre: nombreUsuario,
+                        fecha: fechaObj,
+                        datos: datos
+                    });
+                } catch (error) {
+                    console.error("Error al procesar datos de localStorage:", error);
+                }
             }
         }
         
         // Mostrar mensaje si no hay usuarios
-        if (usuarios.length === 0) {
+        if (usuariosData.length === 0) {
             usersListContainer.innerHTML = '<p class="no-users">No hay usuarios que hayan completado el cuestionario.</p>';
             return;
+        }
+        
+        // Ordenar la lista de usuarios según el criterio seleccionado
+        if (ordenarPor === 'nombre') {
+            usuariosData.sort((a, b) => {
+                return ascendente ? 
+                    a.nombre.localeCompare(b.nombre) : 
+                    b.nombre.localeCompare(a.nombre);
+            });
+            console.log("Ordenado por nombre " + (ascendente ? "ascendente" : "descendente") + ":", usuariosData.map(u => u.nombre));
+        } else if (ordenarPor === 'fecha') {
+            // Asegurarse de que las fechas son objetos Date válidos
+            usuariosData.sort((a, b) => {
+                console.log(`Comparando ${a.nombre} (${a.fecha}) con ${b.nombre} (${b.fecha})`);
+                // Validar que ambas fechas sean objetos Date
+                const fechaA = a.fecha instanceof Date && !isNaN(a.fecha) ? a.fecha : new Date();
+                const fechaB = b.fecha instanceof Date && !isNaN(b.fecha) ? b.fecha : new Date();
+                return ascendente ? 
+                    fechaA.getTime() - fechaB.getTime() : 
+                    fechaB.getTime() - fechaA.getTime();
+            });
+            console.log("Ordenado por fecha:", usuariosData.map(u => `${u.nombre} (${u.fecha.toLocaleDateString()})`));
         }
         
         // Crear la lista de usuarios
         const ul = document.createElement('ul');
         
-        usuarios.forEach(usuario => {
+        usuariosData.forEach(usuarioData => {
             const li = document.createElement('li');
             li.className = 'user-item';
-            li.textContent = usuario;
-            li.addEventListener('click', () => mostrarResultadosUsuario(usuario));
+            
+            // Formatear la fecha para mostrarla
+            let fechaFormateada = "";
+            try {
+                const fecha = new Date(usuarioData.fecha);
+                if (!isNaN(fecha.getTime())) {
+                    fechaFormateada = fecha.toLocaleDateString();
+                }
+            } catch (e) {
+                console.error("Error al formatear fecha:", e);
+            }
+            
+            // Mostrar nombre y fecha si se está ordenando por fecha
+            if (ordenarPor === 'fecha') {
+                li.innerHTML = `<span class="user-name">${usuarioData.nombre}</span><span class="user-date">${fechaFormateada}</span>`;
+            } else {
+                li.textContent = usuarioData.nombre;
+            }
+            
+            li.addEventListener('click', () => mostrarResultadosUsuario(usuarioData.nombre));
             ul.appendChild(li);
         });
         
@@ -829,26 +945,96 @@ function cargarListaUsuarios() {
     // Si Firebase está disponible, obtener usuarios desde Firestore
     db.collection("resultados_disc").get()
         .then((querySnapshot) => {
-            const usuarios = [];
+            const usuariosData = [];
             
             querySnapshot.forEach((doc) => {
-                usuarios.push(doc.id); // doc.id contiene el nombre del usuario
+                const datos = doc.data();
+                console.log("Datos de usuario:", doc.id, datos);
+                console.log("Fecha original:", datos.fecha);
+                
+                // Intentar convertir la fecha a objeto Date
+                let fechaObj;
+                try {
+                    // Si es un timestamp de Firestore, usar toDate()
+                    if (datos.fecha && typeof datos.fecha.toDate === 'function') {
+                        fechaObj = datos.fecha.toDate();
+                        console.log("Convertida desde Timestamp:", fechaObj);
+                    } 
+                    // Si es una cadena ISO o un objeto Date
+                    else if (datos.fecha) {
+                        fechaObj = new Date(datos.fecha);
+                        console.log("Convertida desde string:", fechaObj);
+                    } 
+                    // Si no hay fecha, usar la actual
+                    else {
+                        fechaObj = new Date();
+                        console.log("Sin fecha, usando actual:", fechaObj);
+                    }
+                } catch (error) {
+                    console.error("Error al convertir fecha:", error);
+                    fechaObj = new Date(); // Usar fecha actual como respaldo
+                }
+                
+                usuariosData.push({
+                    nombre: doc.id,
+                    fecha: fechaObj,
+                    datos: datos
+                });
             });
             
+            console.log("Datos recolectados antes de ordenar:", usuariosData);
+            
             // Mostrar mensaje si no hay usuarios
-            if (usuarios.length === 0) {
+            if (usuariosData.length === 0) {
                 usersListContainer.innerHTML = '<p class="no-users">No hay usuarios que hayan completado el cuestionario.</p>';
                 return;
+            }
+            
+            // Ordenar la lista de usuarios según el criterio seleccionado
+            if (ordenarPor === 'nombre') {
+                usuariosData.sort((a, b) => {
+                    return ascendente ? 
+                        a.nombre.localeCompare(b.nombre) : 
+                        b.nombre.localeCompare(a.nombre);
+                });
+                console.log("Ordenado por nombre " + (ascendente ? "ascendente" : "descendente") + ":", usuariosData.map(u => u.nombre));
+            } else if (ordenarPor === 'fecha') {
+                // Asegurarse de que las fechas son objetos Date válidos
+                usuariosData.sort((a, b) => {
+                    console.log(`Comparando ${a.nombre} (${a.fecha}) con ${b.nombre} (${b.fecha})`);
+                    // Validar que ambas fechas sean objetos Date
+                    const fechaA = a.fecha instanceof Date && !isNaN(a.fecha) ? a.fecha : new Date();
+                    const fechaB = b.fecha instanceof Date && !isNaN(b.fecha) ? b.fecha : new Date();
+                    return ascendente ? fechaA.getTime() - fechaB.getTime() : fechaB.getTime() - fechaA.getTime();
+                });
+                console.log("Ordenado por fecha:", usuariosData.map(u => `${u.nombre} (${u.fecha.toLocaleDateString()})`));
             }
             
             // Crear la lista de usuarios
             const ul = document.createElement('ul');
             
-            usuarios.forEach(usuario => {
+            usuariosData.forEach(usuarioData => {
                 const li = document.createElement('li');
                 li.className = 'user-item';
-                li.textContent = usuario;
-                li.addEventListener('click', () => mostrarResultadosUsuario(usuario));
+                
+                // Formatear la fecha para mostrarla
+                let fechaFormateada = "";
+                try {
+                    if (!isNaN(usuarioData.fecha.getTime())) {
+                        fechaFormateada = usuarioData.fecha.toLocaleDateString();
+                    }
+                } catch (e) {
+                    console.error("Error al formatear fecha:", e);
+                }
+                
+                // Mostrar nombre y fecha si se está ordenando por fecha
+                if (ordenarPor === 'fecha') {
+                    li.innerHTML = `<span class="user-name">${usuarioData.nombre}</span><span class="user-date">${fechaFormateada}</span>`;
+                } else {
+                    li.textContent = usuarioData.nombre;
+                }
+                
+                li.addEventListener('click', () => mostrarResultadosUsuario(usuarioData.nombre));
                 ul.appendChild(li);
             });
             
@@ -861,23 +1047,89 @@ function cargarListaUsuarios() {
             
             // Intentar cargar desde localStorage como respaldo
             console.log("Intentando cargar desde localStorage después del error de Firebase");
-            const usuarios = [];
+            const usuariosData = [];
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
                 if (key && key.startsWith('resultados_')) {
-                    const nombreUsuario = key.replace('resultados_', '');
-                    usuarios.push(nombreUsuario);
+                    try {
+                        const datos = JSON.parse(localStorage.getItem(key));
+                        const nombreUsuario = key.replace('resultados_', '');
+                        console.log("Respaldo - datos usuario:", nombreUsuario, datos);
+                        
+                        // Intentar convertir la fecha a objeto Date
+                        let fechaObj;
+                        try {
+                            if (datos.fecha) {
+                                fechaObj = new Date(datos.fecha);
+                                console.log("Respaldo - fecha convertida:", fechaObj);
+                            } else {
+                                fechaObj = new Date();
+                                console.log("Respaldo - sin fecha, usando actual:", fechaObj);
+                            }
+                        } catch (error) {
+                            console.error("Error al convertir fecha:", error);
+                            fechaObj = new Date();
+                        }
+                        
+                        usuariosData.push({
+                            nombre: nombreUsuario,
+                            fecha: fechaObj,
+                            datos: datos
+                        });
+                    } catch (error) {
+                        console.error("Error al procesar datos de localStorage:", error);
+                    }
                 }
             }
             
-            if (usuarios.length > 0) {
+            if (usuariosData.length > 0) {
+                // Ordenar la lista de usuarios según el criterio seleccionado
+                if (ordenarPor === 'nombre') {
+                    usuariosData.sort((a, b) => {
+                        return ascendente ? 
+                            a.nombre.localeCompare(b.nombre) : 
+                            b.nombre.localeCompare(a.nombre);
+                    });
+                    console.log("Respaldo - ordenado por nombre " + (ascendente ? "ascendente" : "descendente") + ":", usuariosData.map(u => u.nombre));
+                } else if (ordenarPor === 'fecha') {
+                    // Asegurarse de que las fechas son objetos Date válidos
+                    usuariosData.sort((a, b) => {
+                        console.log(`Respaldo - comparando ${a.nombre} (${a.fecha}) con ${b.nombre} (${b.fecha})`);
+                        // Validar que ambas fechas sean objetos Date
+                        const fechaA = a.fecha instanceof Date && !isNaN(a.fecha) ? a.fecha : new Date();
+                        const fechaB = b.fecha instanceof Date && !isNaN(b.fecha) ? b.fecha : new Date();
+                        return ascendente ? 
+                            fechaA.getTime() - fechaB.getTime() : 
+                            fechaB.getTime() - fechaA.getTime();
+                    });
+                    console.log("Respaldo - ordenado por fecha:", usuariosData.map(u => `${u.nombre} (${u.fecha})`));
+                }
+                
                 const ul = document.createElement('ul');
                 
-                usuarios.forEach(usuario => {
+                usuariosData.forEach(usuarioData => {
                     const li = document.createElement('li');
                     li.className = 'user-item';
-                    li.textContent = usuario;
-                    li.addEventListener('click', () => mostrarResultadosUsuario(usuario));
+                    
+                    // Formatear la fecha para mostrarla
+                    let fechaFormateada = "";
+                    try {
+                        const fecha = new Date(usuarioData.fecha);
+                        if (!isNaN(fecha.getTime())) {
+                            fechaFormateada = fecha.toLocaleDateString();
+                        }
+                    } catch (e) {
+                        console.error("Error al formatear fecha:", e);
+                    }
+                    
+                    // Mostrar nombre y fecha si se está ordenando por fecha
+                    if (ordenarPor === 'fecha') {
+                        li.innerHTML = `<span class="user-name">${usuarioData.nombre}</span><span class="user-date">${fechaFormateada}</span>`;
+                    } else {
+                        li.textContent = usuarioData.nombre;
+                    }
+                    
+                    li.addEventListener('click', () => mostrarResultadosUsuario(usuarioData.nombre));
                     ul.appendChild(li);
                 });
                 
@@ -1689,7 +1941,7 @@ function displayResults() {
     try {
         // Ocultar sección de cuestionario y mostrar resultados
         discSection.classList.add('hidden');
-        resultsSection.classList.remove('hidden');
+    resultsSection.classList.remove('hidden');
         console.log('Secciones visibilidad cambiada - quiz hidden, results visible');
         
         // Ver resultados calculados
@@ -1801,34 +2053,34 @@ function createChart(canvasId, data, title) {
     
     // Crear nuevo gráfico
     try {
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
                 labels: ['D', 'I', 'S', 'C'],
-                datasets: [{
+            datasets: [{
                     data: [valores.D, valores.I, valores.S, valores.C],
-                    backgroundColor: [
+                backgroundColor: [
                         'rgba(231, 76, 60, 0.7)',    // D - rojo
                         'rgba(241, 196, 15, 0.7)',   // I - amarillo 
                         'rgba(46, 204, 113, 0.7)',   // S - verde
                         'rgba(52, 152, 219, 0.7)'    // C - azul
-                    ],
-                    borderColor: [
+                ],
+                borderColor: [
                         'rgba(231, 76, 60, 1)',      // D - rojo
                         'rgba(241, 196, 15, 1)',     // I - amarillo
                         'rgba(46, 204, 113, 1)',     // S - verde
                         'rgba(52, 152, 219, 1)'      // C - azul
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
                 maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
+            plugins: {
+                legend: {
+                    display: false
+                },
                     title: {
                         display: false,
                         text: title,
@@ -1841,9 +2093,9 @@ function createChart(canvasId, data, title) {
                             bottom: 20
                         }
                     },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
                                 const labels = ['Dominancia', 'Influencia', 'Estabilidad', 'Cumplimiento'];
                                 return labels[context.dataIndex] + ': ' + context.raw;
                             }
