@@ -2204,6 +2204,10 @@ restartButton.addEventListener('click', () => {
     document.getElementById('nombre-usuario').value = '';
 });
 
+// Variables para guardar referencias a los gráficos
+let adminChartTrabajo = null;
+let adminChartPrivado = null;
+
 /**
  * Crea un gráfico para mostrar en el panel de administrador
  * @param {string} canvasId - ID del elemento canvas donde se dibujará el gráfico
@@ -2217,6 +2221,15 @@ function createAdminChart(canvasId, data, title) {
     if (!canvas) {
         console.error(`Canvas con ID ${canvasId} no encontrado`);
         return;
+    }
+    
+    // Destruir gráfico existente si lo hay
+    if (canvasId === 'admin-chart-trabajo' && adminChartTrabajo) {
+        adminChartTrabajo.destroy();
+        adminChartTrabajo = null;
+    } else if (canvasId === 'admin-chart-privado' && adminChartPrivado) {
+        adminChartPrivado.destroy();
+        adminChartPrivado = null;
     }
     
     // Ajustar el tamaño del canvas para hacerlo más grande
@@ -2267,7 +2280,7 @@ function createAdminChart(canvasId, data, title) {
     console.log(`Valores procesados para ${canvasId}:`, valores);
     
     // Crear el gráfico con los mismos estilos de test_results.html
-    new Chart(ctx, {
+    const chart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: ['D', 'I', 'S', 'C'],
@@ -2346,4 +2359,11 @@ function createAdminChart(canvasId, data, title) {
         },
         plugins: [horizontalLinePlugin]
     });
+    
+    // Guardar referencia al gráfico
+    if (canvasId === 'admin-chart-trabajo') {
+        adminChartTrabajo = chart;
+    } else if (canvasId === 'admin-chart-privado') {
+        adminChartPrivado = chart;
+    }
 } 
